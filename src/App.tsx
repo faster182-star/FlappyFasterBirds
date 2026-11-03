@@ -3014,30 +3014,25 @@ export default function App() {
         ctx.fillStyle = color
         ctx.beginPath()
         
-        // Start from character
-        const baseY = bird.y - totalHeight / 2 + colorIndex * stripeHeight
-        ctx.moveTo(startX, baseY)
+        // Calculate offset for this stripe relative to bird center
+        const stripeOffset = colorIndex * stripeHeight - totalHeight / 2
         
-        // Draw stripe following the history
+        // Start from character
+        ctx.moveTo(startX, bird.y + stripeOffset)
+        
+        // Draw stripe following the history (from newest to oldest)
         for (let i = trailHistoryRef.current.length - 1; i >= 0; i--) {
           const pos = trailHistoryRef.current[i]
-          const yOffset = pos.y - bird.y
-          ctx.lineTo(pos.x, baseY + yOffset)
+          ctx.lineTo(pos.x, pos.y + stripeOffset)
         }
         
         // Close at left edge
-        const lastPos = trailHistoryRef.current[0]
-        if (lastPos) {
-          const yOffset = lastPos.y - bird.y
-          ctx.lineTo(0, baseY + yOffset)
-          ctx.lineTo(0, baseY + stripeHeight + yOffset)
-        }
+        ctx.lineTo(0, trailHistoryRef.current[0].y + stripeOffset + stripeHeight)
         
-        // Draw back along bottom
+        // Draw back along bottom (from oldest to newest)
         for (let i = 0; i < trailHistoryRef.current.length; i++) {
           const pos = trailHistoryRef.current[i]
-          const yOffset = pos.y - bird.y
-          ctx.lineTo(pos.x, baseY + stripeHeight + yOffset)
+          ctx.lineTo(pos.x, pos.y + stripeOffset + stripeHeight)
         }
         
         ctx.closePath()
