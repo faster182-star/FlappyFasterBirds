@@ -2990,31 +2990,65 @@ export default function App() {
   // ===== Draw Trail =====
   const drawTrail = useCallback((ctx: CanvasRenderingContext2D, bird: Bird) => {
     const trail = selectedTrailRef.current
+    const length = trailLengthRef.current
     const startX = BIRD_X - BIRD_SIZE / 2
     const stripeHeight = 8
     const totalHeight = trail.colors.length * stripeHeight
 
-    // Simple rainbow stripes - always visible
-    trail.colors.forEach((color, colorIndex) => {
-      ctx.fillStyle = color
-      const y = bird.y - totalHeight / 2 + colorIndex * stripeHeight
-      ctx.fillRect(0, y, startX, stripeHeight)
-    })
+    if (trail.type === 'nyan') {
+      // Nyan Cat style - curved rainbow stripes
+      // Add current position to history
+      trailHistoryRef.current.push({ x: startX, y: bird.y })
+      
+      // Keep only last N positions
+      const maxHistory = Math.min(length * 2, 80)
+      while (trailHistoryRef.current.length > maxHistory) {
+        trailHistoryRef.current.shift()
+      }
 
-    // Particle-based trails for non-nyan
-    if (trail.type !== 'nyan' && frameRef.current % 2 === 0) {
-      const length = trailLengthRef.current
-      const colorIndex = Math.floor(frameRef.current / 2) % trail.colors.length
-      particlesRef.current.push({
-        x: startX,
-        y: bird.y,
-        vx: -1 - Math.random() * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        life: 1,
-        maxLife: length,
-        color: trail.colors[colorIndex],
-        size: 4 + Math.random() * 2,
+      // Draw each color stripe
+      trail.colors.forEach((color, colorIndex) => {
+        ctx.fillStyle = color
+        ctx.beginPath()
+        
+        const stripeOffset = colorIndex * stripeHeight - totalHeight / 2
+        
+        // Start from character
+        ctx.moveTo(startX, bird.y + stripeOffset)
+        
+        // Draw top edge following history (backwards)
+        for (let i = trailHistoryRef.current.length - 1; i >= 0; i--) {
+          const pos = trailHistoryRef.current[i]
+          ctx.lineTo(pos.x, pos.y + stripeOffset)
+        }
+        
+        // Draw left edge
+        ctx.lineTo(0, trailHistoryRef.current[0].y + stripeOffset + stripeHeight)
+        
+        // Draw bottom edge back (forwards)
+        for (let i = 0; i < trailHistoryRef.current.length; i++) {
+          const pos = trailHistoryRef.current[i]
+          ctx.lineTo(pos.x, pos.y + stripeOffset + stripeHeight)
+        }
+        
+        ctx.closePath()
+        ctx.fill()
       })
+    } else {
+      // Particle-based trails
+      if (frameRef.current % 2 === 0) {
+        const colorIndex = Math.floor(frameRef.current / 2) % trail.colors.length
+        particlesRef.current.push({
+          x: startX,
+          y: bird.y,
+          vx: -1 - Math.random() * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          life: 1,
+          maxLife: length,
+          color: trail.colors[colorIndex],
+          size: 4 + Math.random() * 2,
+        })
+      }
     }
   }, [])
 
