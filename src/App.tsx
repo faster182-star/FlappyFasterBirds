@@ -3268,33 +3268,7 @@ export default function App() {
             <div className="text-center">
               <div className="text-6xl mb-4 animate-bounce">{selectedCharacter.emoji}</div>
               <h2 className="text-3xl font-bold text-white mb-6">Готовы?</h2>
-              <p className="text-gray-300 mb-4">Выбрано: {selectedCharacter.emoji} {selectedCharacter.name}</p>
-
-              {/* Difficulty selector */}
-              <div className="mb-6">
-                <p className="text-gray-400 text-sm mb-3">Выберите сложность:</p>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {Object.entries(DIFFICULTIES).map(([key, diff]) => (
-                    <button
-                      key={key}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setSelectedDifficulty(key)
-                      }}
-                      className={`px-3 py-2 rounded-lg border transition-all duration-200 text-sm font-medium ${
-                        selectedDifficulty === key
-                          ? `${diff.bgColor} ${diff.borderColor} ${diff.color} scale-105 shadow-lg`
-                          : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
-                      }`}
-                    >
-                      {diff.icon} {diff.nameRu}
-                    </button>
-                  ))}
-                </div>
-                <p className={`text-xs mt-2 ${currentDifficulty.color}`}>
-                  {currentDifficulty.description}
-                </p>
-              </div>
+              <p className="text-gray-300 mb-6">Выбрано: {selectedCharacter.emoji} {selectedCharacter.name}</p>
 
               {/* Best scores */}
               {Object.values(bestScores).some((s) => s > 0) && (
@@ -3448,6 +3422,36 @@ export default function App() {
             >
               <span className="text-xl mb-0.5">{bg.emoji}</span>
               <span className="text-[8px] text-gray-300 font-medium truncate w-full text-center px-0.5">{bg.name}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Difficulty Selection Panel */}
+      <div className="mt-4 w-full max-w-3xl">
+        <div className="text-center mb-3">
+          <span className="text-gray-400 text-sm">Выберите сложность:</span>
+          <span className={`ml-2 font-bold ${currentDifficulty.color}`}>
+            {currentDifficulty.icon} {currentDifficulty.nameRu}
+          </span>
+        </div>
+        <div className="flex flex-wrap gap-2 justify-center px-2">
+          {Object.entries(DIFFICULTIES).map(([key, diff]) => (
+            <button
+              key={key}
+              onClick={() => setSelectedDifficulty(key)}
+              className={`flex flex-col items-center justify-center w-32 h-20 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${
+                selectedDifficulty === key
+                  ? `${diff.bgColor} ${diff.borderColor} scale-105 shadow-lg`
+                  : 'bg-gray-800/50 border-gray-700 hover:border-gray-500 hover:bg-gray-700/50'
+              }`}
+              title={diff.description}
+            >
+              <span className="text-2xl mb-1">{diff.icon}</span>
+              <span className={`text-sm font-bold ${selectedDifficulty === key ? diff.color : 'text-gray-300'}`}>
+                {diff.nameRu}
+              </span>
+              <span className="text-[9px] text-gray-500 mt-0.5">{diff.description}</span>
             </button>
           ))}
         </div>
