@@ -2993,13 +2993,16 @@ export default function App() {
     if (gameStateRef.current !== 'playing') return
 
     if (selectedTrail.type === 'nyan') {
-      // Nyan Cat style - solid rainbow stripes
+      // Nyan Cat style - solid rainbow stripes starting from character
       const stripeHeight = 6
       const totalHeight = selectedTrail.colors.length * stripeHeight
       const startY = bird.y - totalHeight / 2
+      
+      // Start point is at the left edge of the character
+      const startX = BIRD_X - BIRD_SIZE / 2
 
       // Add current position to history
-      trailHistoryRef.current.push({ x: BIRD_X - 15, y: bird.y })
+      trailHistoryRef.current.push({ x: startX, y: bird.y })
       
       // Keep only last N positions based on trail length
       const maxHistory = trailLength * 2
@@ -3011,16 +3014,18 @@ export default function App() {
       selectedTrail.colors.forEach((color, colorIndex) => {
         ctx.fillStyle = color
         ctx.beginPath()
-        ctx.moveTo(BIRD_X - 15, startY + colorIndex * stripeHeight)
         
-        // Draw stripe following the history
+        // Start from character's left edge
+        ctx.moveTo(startX, startY + colorIndex * stripeHeight)
+        
+        // Draw stripe following the history backwards
         for (let i = trailHistoryRef.current.length - 1; i >= 0; i--) {
           const pos = trailHistoryRef.current[i]
           const yOffset = pos.y - bird.y
           ctx.lineTo(pos.x, startY + colorIndex * stripeHeight + yOffset)
         }
         
-        // Close the stripe
+        // Close the stripe at the left edge of screen
         const lastPos = trailHistoryRef.current[0]
         if (lastPos) {
           const yOffset = lastPos.y - bird.y
@@ -3028,6 +3033,7 @@ export default function App() {
           ctx.lineTo(0, startY + (colorIndex + 1) * stripeHeight + yOffset)
         }
         
+        // Draw back along the bottom of the stripe
         for (let i = 0; i < trailHistoryRef.current.length; i++) {
           const pos = trailHistoryRef.current[i]
           const yOffset = pos.y - bird.y
@@ -3042,7 +3048,7 @@ export default function App() {
       if (frameRef.current % 2 === 0) {
         const colorIndex = Math.floor(frameRef.current / 2) % selectedTrail.colors.length
         particlesRef.current.push({
-          x: BIRD_X - 10,
+          x: BIRD_X - BIRD_SIZE / 2,
           y: bird.y,
           vx: -1 - Math.random() * 0.5,
           vy: (Math.random() - 0.5) * 0.5,
