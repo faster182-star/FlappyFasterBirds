@@ -131,7 +131,6 @@ interface Trail {
   name: string
   emoji: string
   colors: string[]
-  type: 'particles' | 'nyan'
 }
 
 // ===== 20 Animals =====
@@ -2745,77 +2744,66 @@ const TRAILS: Trail[] = [
     name: 'Nyan Cat',
     emoji: '🌈',
     colors: ['#ff0000', '#ff9900', '#ffff00', '#33ff00', '#0099ff', '#6633ff'],
-    type: 'nyan',
   },
   {
     id: 'rainbow',
     name: 'Радуга',
     emoji: '🌈',
     colors: ['#ef4444', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#3b82f6', '#a855f7'],
-    type: 'particles',
   },
   {
     id: 'fire',
     name: 'Огонь',
     emoji: '🔥',
     colors: ['#fbbf24', '#f97316', '#ef4444', '#dc2626', '#991b1b'],
-    type: 'particles',
   },
   {
     id: 'ice',
     name: 'Лёд',
     emoji: '❄️',
     colors: ['#e0f2fe', '#bae6fd', '#7dd3fc', '#38bdf8', '#0ea5e9'],
-    type: 'particles',
   },
   {
     id: 'gold',
     name: 'Золото',
     emoji: '✨',
     colors: ['#fef3c7', '#fde68a', '#fbbf24', '#f59e0b', '#d97706'],
-    type: 'particles',
   },
   {
     id: 'neon',
     name: 'Неон',
     emoji: '💫',
     colors: ['#f0abfc', '#e879f9', '#d946ef', '#c026d3', '#a21caf'],
-    type: 'particles',
   },
   {
     id: 'forest',
     name: 'Лес',
     emoji: '🌿',
     colors: ['#dcfce7', '#bbf7d0', '#86efac', '#4ade80', '#22c55e'],
-    type: 'particles',
   },
   {
     id: 'ocean',
     name: 'Океан',
     emoji: '🌊',
     colors: ['#cffafe', '#a5f3fc', '#67e8f9', '#22d3ee', '#06b6d4'],
-    type: 'particles',
   },
   {
     id: 'sunset',
     name: 'Закат',
     emoji: '🌅',
     colors: ['#fed7aa', '#fdba74', '#fb923c', '#f97316', '#ea580c'],
-    type: 'particles',
   },
   {
     id: 'galaxy',
     name: 'Галактика',
     emoji: '🌌',
     colors: ['#c4b5fd', '#a78bfa', '#8b5cf6', '#7c3aed', '#6d28d9'],
-    type: 'particles',
   },
   {
     id: 'candy',
     name: 'Конфеты',
     emoji: '🍭',
     colors: ['#fbcfe8', '#f9a8d4', '#f472b6', '#ec4899', '#db2777'],
-    type: 'particles',
   },
 ]
 
@@ -2859,7 +2847,6 @@ export default function App() {
   const flashRef = useRef(0)
   const shakeRef = useRef({ x: 0, y: 0, intensity: 0 })
   const difficultyRef = useRef<string>('normal')
-  const trailHistoryRef = useRef<{x: number, y: number}[]>([])
 
   const [displayState, setDisplayState] = useState<GameState>('menu')
   const [score, setScore] = useState(0)
@@ -2932,7 +2919,6 @@ export default function App() {
     birdRef.current = { y: CANVAS_HEIGHT / 2, velocity: 0, rotation: 0 }
     pipesRef.current = []
     particlesRef.current = []
-    trailHistoryRef.current = []
     scoreRef.current = 0
     frameRef.current = 0
     lastPipeTimeRef.current = 0
@@ -3002,68 +2988,19 @@ export default function App() {
     const trail = selectedTrailRef.current
     const length = trailLengthRef.current
     
-    if (trail.type === 'nyan') {
-      // Nyan Cat style - curved rainbow stripes that follow character movement
-      const stripeHeight = 8
-      const totalHeight = trail.colors.length * stripeHeight
-      const startX = BIRD_X - BIRD_SIZE / 2
-
-      // Add current position to history
-      trailHistoryRef.current.unshift({ x: startX, y: bird.y })
-      
-      // Keep only last N positions
-      const maxHistory = Math.min(length * 2, 100)
-      if (trailHistoryRef.current.length > maxHistory) {
-        trailHistoryRef.current = trailHistoryRef.current.slice(0, maxHistory)
-      }
-
-      // Draw each color stripe as a curved polygon
-      trail.colors.forEach((color, colorIndex) => {
-        ctx.fillStyle = color
-        ctx.beginPath()
-        
-        // Calculate offset for this stripe relative to bird center
-        const stripeOffset = colorIndex * stripeHeight - totalHeight / 2
-        
-        // Start from character (newest position)
-        ctx.moveTo(startX, bird.y + stripeOffset)
-        
-        // Draw top edge following the history (from newest to oldest)
-        for (let i = 0; i < trailHistoryRef.current.length; i++) {
-          const pos = trailHistoryRef.current[i]
-          ctx.lineTo(pos.x, pos.y + stripeOffset)
-        }
-        
-        // Draw left edge at the oldest position
-        const oldestPos = trailHistoryRef.current[trailHistoryRef.current.length - 1]
-        if (oldestPos) {
-          ctx.lineTo(oldestPos.x, oldestPos.y + stripeOffset + stripeHeight)
-        }
-        
-        // Draw bottom edge back to character (from oldest to newest)
-        for (let i = trailHistoryRef.current.length - 1; i >= 0; i--) {
-          const pos = trailHistoryRef.current[i]
-          ctx.lineTo(pos.x, pos.y + stripeOffset + stripeHeight)
-        }
-        
-        ctx.closePath()
-        ctx.fill()
+    // All trails use particles
+    if (gameStateRef.current === 'playing' && frameRef.current % 2 === 0) {
+      const colorIndex = Math.floor(frameRef.current / 2) % trail.colors.length
+      particlesRef.current.push({
+        x: BIRD_X - BIRD_SIZE / 2,
+        y: bird.y,
+        vx: -1 - Math.random() * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        life: 1,
+        maxLife: length,
+        color: trail.colors[colorIndex],
+        size: 4 + Math.random() * 2,
       })
-    } else {
-      // Particle-based trails
-      if (gameStateRef.current === 'playing' && frameRef.current % 2 === 0) {
-        const colorIndex = Math.floor(frameRef.current / 2) % trail.colors.length
-        particlesRef.current.push({
-          x: BIRD_X - BIRD_SIZE / 2,
-          y: bird.y,
-          vx: -1 - Math.random() * 0.5,
-          vy: (Math.random() - 0.5) * 0.5,
-          life: 1,
-          maxLife: length,
-          color: trail.colors[colorIndex],
-          size: 4 + Math.random() * 2,
-        })
-      }
     }
   }, [])
 
