@@ -1302,6 +1302,37 @@ export default function App() {
     return false
   }, [])
 
+  // ===== Draw Rainbow Trail =====
+  const drawRainbowTrail = useCallback((ctx: CanvasRenderingContext2D, bird: Bird) => {
+    if (gameStateRef.current !== 'playing') return
+
+    // Rainbow colors
+    const colors = [
+      '#ef4444', // red
+      '#f97316', // orange
+      '#eab308', // yellow
+      '#22c55e', // green
+      '#06b6d4', // cyan
+      '#3b82f6', // blue
+      '#a855f7', // purple
+    ]
+
+    // Spawn trail particles
+    if (frameRef.current % 2 === 0) {
+      const colorIndex = Math.floor(frameRef.current / 2) % colors.length
+      particlesRef.current.push({
+        x: BIRD_X - 10,
+        y: bird.y,
+        vx: -1 - Math.random() * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        life: 1,
+        maxLife: 25,
+        color: colors[colorIndex],
+        size: 4 + Math.random() * 2,
+      })
+    }
+  }, [])
+
   // ===== Draw Character =====
   const drawCharacter = useCallback((ctx: CanvasRenderingContext2D, bird: Bird) => {
     selectedCharacter.draw(ctx, bird, frameRef.current)
@@ -1410,11 +1441,18 @@ export default function App() {
   // ===== Draw Particles =====
   const drawParticles = useCallback((ctx: CanvasRenderingContext2D) => {
     particlesRef.current.forEach((p) => {
-      ctx.globalAlpha = p.life
+      ctx.globalAlpha = p.life * 0.8
       ctx.fillStyle = p.color
+      
+      // Glow effect
+      ctx.shadowBlur = 8
+      ctx.shadowColor = p.color
+      
       ctx.beginPath()
       ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2)
       ctx.fill()
+      
+      ctx.shadowBlur = 0
     })
     ctx.globalAlpha = 1
   }, [])
@@ -1558,6 +1596,7 @@ export default function App() {
       drawBackground(ctx)
       pipesRef.current.forEach((pipe) => drawPipe(ctx, pipe))
       drawGround(ctx)
+      drawRainbowTrail(ctx, birdRef.current)
       drawCharacter(ctx, birdRef.current)
       drawParticles(ctx)
 
@@ -1581,7 +1620,7 @@ export default function App() {
     return () => {
       cancelAnimationFrame(animFrameRef.current)
     }
-  }, [bestScores, checkCollision, drawBackground, drawCharacter, drawDifficultyBadge, drawGround, drawParticles, drawPipe, drawScore, spawnParticles])
+  }, [bestScores, checkCollision, drawBackground, drawCharacter, drawDifficultyBadge, drawGround, drawParticles, drawPipe, drawRainbowTrail, drawScore, spawnParticles])
 
   // ===== Keyboard Handler =====
   useEffect(() => {
