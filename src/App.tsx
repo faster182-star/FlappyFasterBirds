@@ -246,48 +246,109 @@ export default function App() {
     return false
   }, [])
 
-  // ===== Draw Bird =====
-  const drawBird = useCallback((ctx: CanvasRenderingContext2D, bird: Bird) => {
+  // ===== Draw Pig =====
+  const drawPig = useCallback((ctx: CanvasRenderingContext2D, bird: Bird) => {
     ctx.save()
     ctx.translate(BIRD_X, bird.y)
     ctx.rotate((bird.rotation * Math.PI) / 180)
 
+    // Body
     const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
-    bodyGrad.addColorStop(0, '#fde68a')
-    bodyGrad.addColorStop(0.6, '#fbbf24')
-    bodyGrad.addColorStop(1, '#f59e0b')
+    bodyGrad.addColorStop(0, '#fbcfe8')
+    bodyGrad.addColorStop(0.6, '#f9a8d4')
+    bodyGrad.addColorStop(1, '#ec4899')
     ctx.fillStyle = bodyGrad
     ctx.beginPath()
-    ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.3, 0, 0, Math.PI * 2)
+    ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
     ctx.fill()
 
-    const wingFlap = Math.sin(frameRef.current * 0.3) * 5
-    ctx.fillStyle = '#f59e0b'
+    // Ears
+    ctx.fillStyle = '#ec4899'
+    // Left ear
     ctx.beginPath()
-    ctx.ellipse(-3, 2 + wingFlap, 10, 6, -0.3, 0, Math.PI * 2)
+    ctx.ellipse(-6, -12, 5, 7, -0.3, 0, Math.PI * 2)
+    ctx.fill()
+    // Right ear
+    ctx.beginPath()
+    ctx.ellipse(4, -12, 5, 7, 0.3, 0, Math.PI * 2)
+    ctx.fill()
+    // Inner ears
+    ctx.fillStyle = '#f472b6'
+    ctx.beginPath()
+    ctx.ellipse(-6, -11, 3, 4, -0.3, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(4, -11, 3, 4, 0.3, 0, Math.PI * 2)
     ctx.fill()
 
+    // Snout (пятачок)
+    ctx.fillStyle = '#f472b6'
+    ctx.beginPath()
+    ctx.ellipse(10, 2, 8, 6, 0, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Nostrils
+    ctx.fillStyle = '#be185d'
+    ctx.beginPath()
+    ctx.ellipse(8, 2, 2, 2.5, 0, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(13, 2, 2, 2.5, 0, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Eyes
     ctx.fillStyle = '#fff'
     ctx.beginPath()
-    ctx.arc(8, -5, 6, 0, Math.PI * 2)
+    ctx.arc(-2, -4, 5, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(6, -4, 5, 0, Math.PI * 2)
     ctx.fill()
 
+    // Pupils
     ctx.fillStyle = '#1e1e1e'
     ctx.beginPath()
-    ctx.arc(10, -5, 3, 0, Math.PI * 2)
+    ctx.arc(-1, -4, 2.5, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(7, -4, 2.5, 0, Math.PI * 2)
     ctx.fill()
 
+    // Eye highlights
     ctx.fillStyle = '#fff'
     ctx.beginPath()
-    ctx.arc(11, -6, 1.2, 0, Math.PI * 2)
+    ctx.arc(0, -5, 1, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(8, -5, 1, 0, Math.PI * 2)
     ctx.fill()
 
-    ctx.fillStyle = '#ef4444'
+    // Curly tail
+    const tailWag = Math.sin(frameRef.current * 0.15) * 2
+    ctx.strokeStyle = '#ec4899'
+    ctx.lineWidth = 2.5
+    ctx.lineCap = 'round'
     ctx.beginPath()
-    ctx.moveTo(12, 0)
-    ctx.lineTo(20, 2)
-    ctx.lineTo(12, 5)
-    ctx.closePath()
+    ctx.moveTo(-BIRD_SIZE / 2 + 2, 0)
+    ctx.bezierCurveTo(
+      -BIRD_SIZE / 2 - 3, -3 + tailWag,
+      -BIRD_SIZE / 2 - 6, 3 + tailWag,
+      -BIRD_SIZE / 2 - 4, 6 + tailWag
+    )
+    ctx.bezierCurveTo(
+      -BIRD_SIZE / 2 - 2, 8 + tailWag,
+      -BIRD_SIZE / 2 - 7, 10 + tailWag,
+      -BIRD_SIZE / 2 - 8, 7 + tailWag
+    )
+    ctx.stroke()
+
+    // Cheeks (blush)
+    ctx.fillStyle = 'rgba(244, 114, 182, 0.4)'
+    ctx.beginPath()
+    ctx.ellipse(-6, 3, 3, 2, 0, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(14, 3, 3, 2, 0, 0, Math.PI * 2)
     ctx.fill()
 
     ctx.restore()
@@ -544,7 +605,7 @@ export default function App() {
       drawBackground(ctx)
       pipesRef.current.forEach((pipe) => drawPipe(ctx, pipe))
       drawGround(ctx)
-      drawBird(ctx, birdRef.current)
+      drawPig(ctx, birdRef.current)
       drawParticles(ctx)
 
       if (state === 'playing') {
@@ -567,7 +628,7 @@ export default function App() {
     return () => {
       cancelAnimationFrame(animFrameRef.current)
     }
-  }, [bestScores, checkCollision, drawBackground, drawBird, drawDifficultyBadge, drawGround, drawParticles, drawPipe, drawScore, spawnParticles])
+  }, [bestScores, checkCollision, drawBackground, drawPig, drawDifficultyBadge, drawGround, drawParticles, drawPipe, drawScore, spawnParticles])
 
   // ===== Keyboard Handler =====
   useEffect(() => {
@@ -651,7 +712,7 @@ export default function App() {
       {/* Title */}
       <div className="mb-4 text-center">
         <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-500">
-          🐦 Flappy Bird
+          🐷 Flappy Pig
         </h1>
       </div>
 
@@ -672,7 +733,7 @@ export default function App() {
         {displayState === 'menu' && !showDifficultyPicker && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
             <div className="text-center">
-              <div className="text-6xl mb-4 animate-bounce">🐦</div>
+              <div className="text-6xl mb-4 animate-bounce">🐷</div>
               <h2 className="text-3xl font-bold text-white mb-6">Готовы?</h2>
               
               {/* Difficulty selector */}
