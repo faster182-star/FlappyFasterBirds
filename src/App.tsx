@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 const CANVAS_WIDTH = 400
 const CANVAS_HEIGHT = 600
 const BIRD_SIZE = 30
-const BIRD_X = 80
+const BIRD_X = 100
 const PIPE_WIDTH = 60
 const GROUND_HEIGHT = 60
 
@@ -32,12 +32,12 @@ const DIFFICULTIES: Record<string, DifficultyConfig> = {
     color: 'text-green-400',
     bgColor: 'bg-green-500/10',
     borderColor: 'border-green-500/40',
-    gravity: 0.35,
-    jumpForce: -7,
-    pipeGap: 180,
-    pipeSpeed: 2,
-    pipeSpawnInterval: 2200,
-    description: 'Для новичков',
+    gravity: 0.25,
+    jumpForce: -6,
+    pipeGap: 220,
+    pipeSpeed: 1.5,
+    pipeSpawnInterval: 2500,
+    description: 'Очень легко для всех',
   },
   normal: {
     name: 'Normal',
@@ -46,12 +46,12 @@ const DIFFICULTIES: Record<string, DifficultyConfig> = {
     color: 'text-blue-400',
     bgColor: 'bg-blue-500/10',
     borderColor: 'border-blue-500/40',
-    gravity: 0.45,
-    jumpForce: -7.5,
-    pipeGap: 155,
-    pipeSpeed: 2.5,
-    pipeSpawnInterval: 1800,
-    description: 'Стандартная сложность',
+    gravity: 0.35,
+    jumpForce: -6.5,
+    pipeGap: 180,
+    pipeSpeed: 2,
+    pipeSpawnInterval: 2200,
+    description: 'Комфортная игра',
   },
   hard: {
     name: 'Hard',
@@ -60,12 +60,12 @@ const DIFFICULTIES: Record<string, DifficultyConfig> = {
     color: 'text-orange-400',
     bgColor: 'bg-orange-500/10',
     borderColor: 'border-orange-500/40',
-    gravity: 0.55,
-    jumpForce: -8,
-    pipeGap: 130,
-    pipeSpeed: 3,
-    pipeSpawnInterval: 1500,
-    description: 'Для опытных',
+    gravity: 0.45,
+    jumpForce: -7,
+    pipeGap: 150,
+    pipeSpeed: 2.5,
+    pipeSpawnInterval: 1800,
+    description: 'Для опытных игроков',
   },
   extreme: {
     name: 'Extreme',
@@ -74,11 +74,11 @@ const DIFFICULTIES: Record<string, DifficultyConfig> = {
     color: 'text-purple-400',
     bgColor: 'bg-purple-500/10',
     borderColor: 'border-purple-500/40',
-    gravity: 0.65,
-    jumpForce: -8.5,
-    pipeGap: 110,
-    pipeSpeed: 3.5,
-    pipeSpawnInterval: 1300,
+    gravity: 0.55,
+    jumpForce: -7.5,
+    pipeGap: 130,
+    pipeSpeed: 3,
+    pipeSpawnInterval: 1500,
     description: 'Только для мастеров',
   },
 }
@@ -235,8 +235,9 @@ export default function App() {
       const gapTop = pipe.topHeight
       const gapBottom = pipe.topHeight + diff.pipeGap
 
-      if (birdRight > pipeLeft + 5 && birdLeft < pipeRight - 5) {
-        if (birdTop < gapTop || birdBottom > gapBottom) {
+      // More forgiving collision (10px margin instead of 5px)
+      if (birdRight > pipeLeft + 10 && birdLeft < pipeRight - 10) {
+        if (birdTop < gapTop + 5 || birdBottom > gapBottom - 5) {
           return true
         }
       }
@@ -465,8 +466,8 @@ export default function App() {
 
         const now = Date.now()
         if (now - lastPipeTimeRef.current > diff.pipeSpawnInterval) {
-          const minTop = 60
-          const maxTop = CANVAS_HEIGHT - GROUND_HEIGHT - diff.pipeGap - 60
+          const minTop = 80
+          const maxTop = CANVAS_HEIGHT - GROUND_HEIGHT - diff.pipeGap - 80
           const topHeight = minTop + Math.random() * (maxTop - minTop)
           pipesRef.current.push({ x: CANVAS_WIDTH, topHeight, passed: false })
           lastPipeTimeRef.current = now
@@ -510,9 +511,9 @@ export default function App() {
       } else if (state === 'gameover') {
         const bird = birdRef.current
         if (bird.y < CANVAS_HEIGHT - GROUND_HEIGHT - BIRD_SIZE / 2) {
-          bird.velocity += diff.gravity
+          bird.velocity += diff.gravity * 0.5 // Slower fall after death
           bird.y += bird.velocity
-          bird.rotation = lerp(bird.rotation, 90, 0.1)
+          bird.rotation = lerp(bird.rotation, 90, 0.08)
         }
       }
 
