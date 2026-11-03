@@ -32,11 +32,11 @@ const DIFFICULTIES: Record<string, DifficultyConfig> = {
     color: 'text-green-400',
     bgColor: 'bg-green-500/10',
     borderColor: 'border-green-500/40',
-    gravity: 0.25,
-    jumpForce: -6,
-    pipeGap: 220,
-    pipeSpeed: 1.5,
-    pipeSpawnInterval: 2500,
+    gravity: 0.2,
+    jumpForce: -5.5,
+    pipeGap: 250,
+    pipeSpeed: 1.2,
+    pipeSpawnInterval: 3000,
     description: 'Очень легко для всех',
   },
   normal: {
@@ -46,11 +46,11 @@ const DIFFICULTIES: Record<string, DifficultyConfig> = {
     color: 'text-blue-400',
     bgColor: 'bg-blue-500/10',
     borderColor: 'border-blue-500/40',
-    gravity: 0.35,
-    jumpForce: -6.5,
-    pipeGap: 180,
-    pipeSpeed: 2,
-    pipeSpawnInterval: 2200,
+    gravity: 0.28,
+    jumpForce: -6,
+    pipeGap: 200,
+    pipeSpeed: 1.7,
+    pipeSpawnInterval: 2600,
     description: 'Комфортная игра',
   },
   hard: {
@@ -60,11 +60,11 @@ const DIFFICULTIES: Record<string, DifficultyConfig> = {
     color: 'text-orange-400',
     bgColor: 'bg-orange-500/10',
     borderColor: 'border-orange-500/40',
-    gravity: 0.45,
-    jumpForce: -7,
-    pipeGap: 150,
-    pipeSpeed: 2.5,
-    pipeSpawnInterval: 1800,
+    gravity: 0.35,
+    jumpForce: -6.5,
+    pipeGap: 170,
+    pipeSpeed: 2.2,
+    pipeSpawnInterval: 2200,
     description: 'Для опытных игроков',
   },
   extreme: {
@@ -74,11 +74,11 @@ const DIFFICULTIES: Record<string, DifficultyConfig> = {
     color: 'text-purple-400',
     bgColor: 'bg-purple-500/10',
     borderColor: 'border-purple-500/40',
-    gravity: 0.55,
-    jumpForce: -7.5,
-    pipeGap: 130,
-    pipeSpeed: 3,
-    pipeSpawnInterval: 1500,
+    gravity: 0.45,
+    jumpForce: -7,
+    pipeGap: 150,
+    pipeSpeed: 2.7,
+    pipeSpawnInterval: 1800,
     description: 'Только для мастеров',
   },
 }
@@ -235,9 +235,9 @@ export default function App() {
       const gapTop = pipe.topHeight
       const gapBottom = pipe.topHeight + diff.pipeGap
 
-      // More forgiving collision (10px margin instead of 5px)
-      if (birdRight > pipeLeft + 10 && birdLeft < pipeRight - 10) {
-        if (birdTop < gapTop + 5 || birdBottom > gapBottom - 5) {
+      // Very forgiving collision (15px margin)
+      if (birdRight > pipeLeft + 15 && birdLeft < pipeRight - 15) {
+        if (birdTop < gapTop + 10 || birdBottom > gapBottom - 10) {
           return true
         }
       }
@@ -466,8 +466,8 @@ export default function App() {
 
         const now = Date.now()
         if (now - lastPipeTimeRef.current > diff.pipeSpawnInterval) {
-          const minTop = 80
-          const maxTop = CANVAS_HEIGHT - GROUND_HEIGHT - diff.pipeGap - 80
+          const minTop = 100
+          const maxTop = CANVAS_HEIGHT - GROUND_HEIGHT - diff.pipeGap - 100
           const topHeight = minTop + Math.random() * (maxTop - minTop)
           pipesRef.current.push({ x: CANVAS_WIDTH, topHeight, passed: false })
           lastPipeTimeRef.current = now
