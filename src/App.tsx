@@ -3012,7 +3012,7 @@ export default function App() {
       trailHistoryRef.current.unshift({ x: startX, y: bird.y })
       
       // Keep only last N positions
-      const maxHistory = length * 2
+      const maxHistory = Math.min(length * 2, 100)
       if (trailHistoryRef.current.length > maxHistory) {
         trailHistoryRef.current = trailHistoryRef.current.slice(0, maxHistory)
       }
@@ -3321,7 +3321,7 @@ export default function App() {
     return () => {
       cancelAnimationFrame(animFrameRef.current)
     }
-  }, [bestScores, checkCollision, customGravity, customSpeed, drawBackground, drawCharacter, drawDifficultyBadge, drawGround, drawParticles, drawPipe, drawScore, spawnParticles])
+  }, [bestScores, checkCollision, customGravity, customSpeed, drawBackground, drawCharacter, drawDifficultyBadge, drawGround, drawParticles, drawPipe, drawTrail, drawScore, spawnParticles])
 
   // ===== Keyboard Handler =====
   useEffect(() => {
