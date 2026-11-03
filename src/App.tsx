@@ -117,6 +117,14 @@ interface Character {
   draw: (ctx: CanvasRenderingContext2D, bird: Bird, frame: number) => void
 }
 
+// ===== Background Types =====
+interface Background {
+  id: string
+  name: string
+  emoji: string
+  draw: (ctx: CanvasRenderingContext2D, frame: number) => void
+}
+
 // ===== 20 Animals =====
 const CHARACTERS: Character[] = [
   {
@@ -1158,6 +1166,1567 @@ const CHARACTERS: Character[] = [
       ctx.restore()
     },
   },
+  // ===== 30 New Animals with Realistic Graphics =====
+  {
+    id: 'dragon',
+    name: 'Дракон',
+    emoji: '🐉',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#dc2626')
+      bodyGrad.addColorStop(0.5, '#b91c1c')
+      bodyGrad.addColorStop(1, '#7f1d1d')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#fbbf24'
+      ctx.beginPath()
+      ctx.ellipse(0, 4, BIRD_SIZE / 3, BIRD_SIZE / 3, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#7f1d1d'
+      ctx.beginPath()
+      ctx.moveTo(-8, -10)
+      ctx.lineTo(-14, -18)
+      ctx.lineTo(-5, -12)
+      ctx.closePath()
+      ctx.fill()
+      ctx.beginPath()
+      ctx.moveTo(8, -10)
+      ctx.lineTo(14, -18)
+      ctx.lineTo(5, -12)
+      ctx.closePath()
+      ctx.fill()
+      ctx.fillStyle = '#fbbf24'
+      ctx.beginPath()
+      ctx.arc(-5, -3, 4, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(5, -3, 4, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.ellipse(-5, -3, 1.5, 3, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(5, -3, 1.5, 3, 0, 0, Math.PI * 2)
+      ctx.fill()
+      const wingFlap = Math.sin(frame * 0.3) * 5
+      ctx.fillStyle = '#991b1b'
+      ctx.beginPath()
+      ctx.ellipse(-BIRD_SIZE / 2 + 2, 0 + wingFlap, 6, 10, -0.3, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(BIRD_SIZE / 2 - 2, 0 + wingFlap, 6, 10, 0.3, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'unicorn',
+    name: 'Единорог',
+    emoji: '🦄',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#ffffff')
+      bodyGrad.addColorStop(1, '#e0e7ff')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#fbbf24'
+      ctx.beginPath()
+      ctx.moveTo(0, -12)
+      ctx.lineTo(-2, -20)
+      ctx.lineTo(2, -20)
+      ctx.closePath()
+      ctx.fill()
+      ctx.fillStyle = '#c084fc'
+      ctx.beginPath()
+      ctx.ellipse(-8, -8, 4, 6, -0.3, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(8, -8, 4, 6, 0.3, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-5, -3, 2.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(5, -3, 2.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#ffffff'
+      ctx.beginPath()
+      ctx.arc(-4.5, -3.5, 0.8, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(5.5, -3.5, 0.8, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'phoenix',
+    name: 'Феникс',
+    emoji: '🔥',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#fbbf24')
+      bodyGrad.addColorStop(0.5, '#f97316')
+      bodyGrad.addColorStop(1, '#dc2626')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#fbbf24'
+      ctx.beginPath()
+      ctx.moveTo(-6, -10)
+      ctx.lineTo(-10, -18)
+      ctx.lineTo(-3, -12)
+      ctx.closePath()
+      ctx.fill()
+      ctx.beginPath()
+      ctx.moveTo(6, -10)
+      ctx.lineTo(10, -18)
+      ctx.lineTo(3, -12)
+      ctx.closePath()
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-5, -3, 2.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(5, -3, 2.5, 0, Math.PI * 2)
+      ctx.fill()
+      const wingFlap = Math.sin(frame * 0.4) * 6
+      ctx.fillStyle = '#dc2626'
+      ctx.beginPath()
+      ctx.ellipse(-BIRD_SIZE / 2 + 2, 0 + wingFlap, 7, 11, -0.3, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(BIRD_SIZE / 2 - 2, 0 + wingFlap, 7, 11, 0.3, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'whale',
+    name: 'Кит',
+    emoji: '🐋',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#3b82f6')
+      bodyGrad.addColorStop(1, '#1e40af')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 1.8, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#bfdbfe'
+      ctx.beginPath()
+      ctx.ellipse(0, 4, BIRD_SIZE / 3, BIRD_SIZE / 4, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-8, -2, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(8, -2, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#ffffff'
+      ctx.beginPath()
+      ctx.arc(-7.5, -2.5, 0.6, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(8.5, -2.5, 0.6, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'dolphin',
+    name: 'Дельфин',
+    emoji: '🐬',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#60a5fa')
+      bodyGrad.addColorStop(1, '#2563eb')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 1.8, BIRD_SIZE / 2.5, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#bfdbfe'
+      ctx.beginPath()
+      ctx.ellipse(0, 3, BIRD_SIZE / 3, BIRD_SIZE / 4, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#1e40af'
+      ctx.beginPath()
+      ctx.moveTo(0, -10)
+      ctx.lineTo(-3, -16)
+      ctx.lineTo(3, -16)
+      ctx.closePath()
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-6, -2, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(6, -2, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'shark',
+    name: 'Акула',
+    emoji: '🦈',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#6b7280')
+      bodyGrad.addColorStop(1, '#374151')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 1.8, BIRD_SIZE / 2.5, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#d1d5db'
+      ctx.beginPath()
+      ctx.ellipse(0, 4, BIRD_SIZE / 3, BIRD_SIZE / 4, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#374151'
+      ctx.beginPath()
+      ctx.moveTo(0, -10)
+      ctx.lineTo(-4, -18)
+      ctx.lineTo(4, -18)
+      ctx.closePath()
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-6, -2, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(6, -2, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'octopus',
+    name: 'Осьминог',
+    emoji: '🐙',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#c084fc')
+      bodyGrad.addColorStop(1, '#7c3aed')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.strokeStyle = '#7c3aed'
+      ctx.lineWidth = 2
+      for (let i = 0; i < 6; i++) {
+        const angle = (i / 6) * Math.PI + Math.PI / 2
+        const x = Math.cos(angle) * (BIRD_SIZE / 2 - 2)
+        const y = Math.sin(angle) * (BIRD_SIZE / 2 - 2)
+        ctx.beginPath()
+        ctx.moveTo(x, y)
+        ctx.quadraticCurveTo(x + Math.cos(angle) * 5, y + Math.sin(angle) * 8, x + Math.cos(angle) * 3, y + Math.sin(angle) * 12)
+        ctx.stroke()
+      }
+      ctx.fillStyle = '#ffffff'
+      ctx.beginPath()
+      ctx.arc(-5, -3, 3, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(5, -3, 3, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-5, -3, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(5, -3, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'turtle',
+    name: 'Черепаха',
+    emoji: '🐢',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#22c55e')
+      bodyGrad.addColorStop(1, '#15803d')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#166534'
+      for (let i = 0; i < 6; i++) {
+        const angle = (i / 6) * Math.PI * 2
+        const x = Math.cos(angle) * (BIRD_SIZE / 3)
+        const y = Math.sin(angle) * (BIRD_SIZE / 3)
+        ctx.beginPath()
+        ctx.arc(x, y, 3, 0, Math.PI * 2)
+        ctx.fill()
+      }
+      ctx.fillStyle = '#86efac'
+      ctx.beginPath()
+      ctx.ellipse(8, 0, 4, 3, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(9, -1, 1, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'frog',
+    name: 'Лягушка',
+    emoji: '🐸',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#4ade80')
+      bodyGrad.addColorStop(1, '#16a34a')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#ffffff'
+      ctx.beginPath()
+      ctx.arc(-6, -6, 4, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(6, -6, 4, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-6, -6, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(6, -6, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.strokeStyle = '#15803d'
+      ctx.lineWidth = 1.5
+      ctx.beginPath()
+      ctx.arc(0, 4, 4, 0, Math.PI)
+      ctx.stroke()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'snake',
+    name: 'Змея',
+    emoji: '🐍',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#84cc16')
+      bodyGrad.addColorStop(1, '#4d7c0f')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.5, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#365314'
+      for (let i = 0; i < 5; i++) {
+        const x = (i - 2) * 4
+        ctx.beginPath()
+        ctx.arc(x, 0, 2, 0, Math.PI * 2)
+        ctx.fill()
+      }
+      ctx.fillStyle = '#fbbf24'
+      ctx.beginPath()
+      ctx.arc(-4, -3, 2.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(4, -3, 2.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.ellipse(-4, -3, 1, 2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(4, -3, 1, 2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'crab',
+    name: 'Краб',
+    emoji: '🦀',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#ef4444')
+      bodyGrad.addColorStop(1, '#b91c1c')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.5, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.strokeStyle = '#b91c1c'
+      ctx.lineWidth = 3
+      ctx.beginPath()
+      ctx.moveTo(-BIRD_SIZE / 2, 0)
+      ctx.lineTo(-BIRD_SIZE / 2 - 6, -4)
+      ctx.lineTo(-BIRD_SIZE / 2 - 4, -8)
+      ctx.stroke()
+      ctx.beginPath()
+      ctx.moveTo(BIRD_SIZE / 2, 0)
+      ctx.lineTo(BIRD_SIZE / 2 + 6, -4)
+      ctx.lineTo(BIRD_SIZE / 2 + 4, -8)
+      ctx.stroke()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-4, -2, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(4, -2, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'butterfly',
+    name: 'Бабочка',
+    emoji: '🦋',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#1e293b')
+      bodyGrad.addColorStop(1, '#0f172a')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, 2, BIRD_SIZE / 2.5, 0, 0, Math.PI * 2)
+      ctx.fill()
+      const wingFlap = Math.sin(frame * 0.4) * 0.3
+      ctx.fillStyle = '#8b5cf6'
+      ctx.save()
+      ctx.rotate(wingFlap)
+      ctx.beginPath()
+      ctx.ellipse(-8, -2, 8, 10, -0.3, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+      ctx.save()
+      ctx.rotate(-wingFlap)
+      ctx.beginPath()
+      ctx.ellipse(8, -2, 8, 10, 0.3, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+      ctx.fillStyle = '#c084fc'
+      ctx.beginPath()
+      ctx.arc(-8, -2, 3, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(8, -2, 3, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'bee',
+    name: 'Пчела',
+    emoji: '🐝',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#fbbf24')
+      bodyGrad.addColorStop(1, '#d97706')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.5, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#1e293b'
+      for (let i = 0; i < 3; i++) {
+        ctx.fillRect(-BIRD_SIZE / 2, -2 + i * 4, BIRD_SIZE, 2)
+      }
+      const wingFlap = Math.sin(frame * 0.5) * 4
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'
+      ctx.beginPath()
+      ctx.ellipse(-4, -6 + wingFlap, 5, 8, -0.3, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(4, -6 + wingFlap, 5, 8, 0.3, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-4, -2, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(4, -2, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'ladybug',
+    name: 'Божья коровка',
+    emoji: '🐞',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#ef4444')
+      bodyGrad.addColorStop(1, '#b91c1c')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#1e293b'
+      ctx.beginPath()
+      ctx.ellipse(0, -BIRD_SIZE / 2.5, BIRD_SIZE / 4, BIRD_SIZE / 5, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillRect(-1, -BIRD_SIZE / 2.2, 2, BIRD_SIZE)
+      ctx.beginPath()
+      ctx.arc(-5, 2, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(5, 2, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(-4, 6, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(4, 6, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#ffffff'
+      ctx.beginPath()
+      ctx.arc(-3, -BIRD_SIZE / 2.5, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(3, -BIRD_SIZE / 2.5, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'snail',
+    name: 'Улитка',
+    emoji: '🐌',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#a78bfa')
+      bodyGrad.addColorStop(1, '#6d28d9')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 2, BIRD_SIZE / 2, BIRD_SIZE / 3, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.strokeStyle = '#4c1d95'
+      ctx.lineWidth = 2
+      ctx.beginPath()
+      ctx.arc(2, 0, 6, 0, Math.PI * 1.5)
+      ctx.stroke()
+      ctx.beginPath()
+      ctx.arc(2, 0, 4, 0, Math.PI * 1.5)
+      ctx.stroke()
+      ctx.fillStyle = '#c4b5fd'
+      ctx.beginPath()
+      ctx.ellipse(6, -4, 3, 4, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(7, -5, 1, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'ant',
+    name: 'Муравей',
+    emoji: '🐜',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      ctx.fillStyle = '#78350f'
+      ctx.beginPath()
+      ctx.ellipse(0, -4, 4, 5, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(0, 2, 5, 6, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(0, 8, 4, 5, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.strokeStyle = '#78350f'
+      ctx.lineWidth = 1
+      for (let i = 0; i < 3; i++) {
+        ctx.beginPath()
+        ctx.moveTo(-4, 0 + i * 4)
+        ctx.lineTo(-10, 2 + i * 4)
+        ctx.stroke()
+        ctx.beginPath()
+        ctx.moveTo(4, 0 + i * 4)
+        ctx.lineTo(10, 2 + i * 4)
+        ctx.stroke()
+      }
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-2, -5, 1, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(2, -5, 1, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'spider',
+    name: 'Паук',
+    emoji: '🕷️',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      ctx.fillStyle = '#1e293b'
+      ctx.beginPath()
+      ctx.ellipse(0, 0, 6, 8, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(0, -6, 4, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.strokeStyle = '#1e293b'
+      ctx.lineWidth = 1.5
+      for (let i = 0; i < 4; i++) {
+        const angle = (i / 4) * Math.PI - Math.PI / 2
+        ctx.beginPath()
+        ctx.moveTo(Math.cos(angle) * 6, Math.sin(angle) * 8)
+        ctx.lineTo(Math.cos(angle) * 14, Math.sin(angle) * 16)
+        ctx.stroke()
+        ctx.beginPath()
+        ctx.moveTo(-Math.cos(angle) * 6, Math.sin(angle) * 8)
+        ctx.lineTo(-Math.cos(angle) * 14, Math.sin(angle) * 16)
+        ctx.stroke()
+      }
+      ctx.fillStyle = '#ef4444'
+      ctx.beginPath()
+      ctx.arc(-2, -7, 1, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(2, -7, 1, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'scorpion',
+    name: 'Скорпион',
+    emoji: '🦂',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      ctx.fillStyle = '#92400e'
+      ctx.beginPath()
+      ctx.ellipse(0, 0, 8, 5, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(0, -4, 4, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.strokeStyle = '#92400e'
+      ctx.lineWidth = 2
+      ctx.beginPath()
+      ctx.moveTo(0, 5)
+      ctx.quadraticCurveTo(8, 10, 6, 15)
+      ctx.quadraticCurveTo(4, 18, 0, 16)
+      ctx.stroke()
+      ctx.fillStyle = '#78350f'
+      for (let i = 0; i < 4; i++) {
+        ctx.beginPath()
+        ctx.moveTo(-6, -2 + i * 2)
+        ctx.lineTo(-12, 0 + i * 2)
+        ctx.stroke()
+        ctx.beginPath()
+        ctx.moveTo(6, -2 + i * 2)
+        ctx.lineTo(12, 0 + i * 2)
+        ctx.stroke()
+      }
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-2, -5, 1, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(2, -5, 1, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'bat',
+    name: 'Летучая мышь',
+    emoji: '🦇',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      ctx.fillStyle = '#1e293b'
+      ctx.beginPath()
+      ctx.ellipse(0, 0, 5, 7, 0, 0, Math.PI * 2)
+      ctx.fill()
+      const wingFlap = Math.sin(frame * 0.4) * 5
+      ctx.beginPath()
+      ctx.moveTo(-5, 0)
+      ctx.quadraticCurveTo(-12, -5 + wingFlap, -15, 0 + wingFlap)
+      ctx.quadraticCurveTo(-12, 5 + wingFlap, -5, 3)
+      ctx.closePath()
+      ctx.fill()
+      ctx.beginPath()
+      ctx.moveTo(5, 0)
+      ctx.quadraticCurveTo(12, -5 + wingFlap, 15, 0 + wingFlap)
+      ctx.quadraticCurveTo(12, 5 + wingFlap, 5, 3)
+      ctx.closePath()
+      ctx.fill()
+      ctx.fillStyle = '#ef4444'
+      ctx.beginPath()
+      ctx.arc(-2, -2, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(2, -2, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'hamster',
+    name: 'Хомяк',
+    emoji: '🐹',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#fbbf24')
+      bodyGrad.addColorStop(1, '#d97706')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#fef3c7'
+      ctx.beginPath()
+      ctx.ellipse(0, 4, BIRD_SIZE / 3, BIRD_SIZE / 3, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#d97706'
+      ctx.beginPath()
+      ctx.arc(-10, -8, 4, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(10, -8, 4, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#f472b6'
+      ctx.beginPath()
+      ctx.arc(-10, -8, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(10, -8, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-5, -3, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(5, -3, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#f472b6'
+      ctx.beginPath()
+      ctx.ellipse(0, 3, 2, 1.5, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'chipmunk',
+    name: 'Бурундук',
+    emoji: '🐿️',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#d97706')
+      bodyGrad.addColorStop(1, '#92400e')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#fef3c7'
+      ctx.fillRect(-1, -BIRD_SIZE / 2, 2, BIRD_SIZE)
+      ctx.fillStyle = '#78350f'
+      ctx.beginPath()
+      ctx.arc(-10, -8, 4, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(10, -8, 4, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-5, -3, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(5, -3, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#78350f'
+      ctx.beginPath()
+      ctx.ellipse(0, 3, 2, 1.5, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'raccoon',
+    name: 'Енот',
+    emoji: '🦝',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#9ca3af')
+      bodyGrad.addColorStop(1, '#6b7280')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#1e293b'
+      ctx.beginPath()
+      ctx.ellipse(-6, -3, 5, 4, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(6, -3, 5, 4, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#6b7280'
+      ctx.beginPath()
+      ctx.arc(-10, -10, 4, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(10, -10, 4, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#ffffff'
+      ctx.beginPath()
+      ctx.arc(-6, -3, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(6, -3, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-6, -3, 1, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(6, -3, 1, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'sloth',
+    name: 'Ленивец',
+    emoji: '🦥',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#a16207')
+      bodyGrad.addColorStop(1, '#78350f')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#fef3c7'
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 3, BIRD_SIZE / 3, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#78350f'
+      ctx.beginPath()
+      ctx.ellipse(-6, -3, 4, 3, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(6, -3, 4, 3, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-6, -3, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(6, -3, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'armadillo',
+    name: 'Броненосец',
+    emoji: '🦔',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#9ca3af')
+      bodyGrad.addColorStop(1, '#6b7280')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.strokeStyle = '#4b5563'
+      ctx.lineWidth = 1
+      for (let i = 0; i < 5; i++) {
+        ctx.beginPath()
+        ctx.arc(0, 0, BIRD_SIZE / 2 - i * 2, 0, Math.PI * 2)
+        ctx.stroke()
+      }
+      ctx.fillStyle = '#fef3c7'
+      ctx.beginPath()
+      ctx.ellipse(8, 0, 4, 3, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(9, -1, 1, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'hedgehog2',
+    name: 'Ёжик 2',
+    emoji: '🦔',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      ctx.fillStyle = '#78350f'
+      for (let i = 0; i < 15; i++) {
+        const angle = (i / 15) * Math.PI * 2
+        const x = Math.cos(angle) * (BIRD_SIZE / 2 + 3)
+        const y = Math.sin(angle) * (BIRD_SIZE / 2 + 3)
+        ctx.beginPath()
+        ctx.moveTo(x, y)
+        ctx.lineTo(x + Math.cos(angle) * 5, y + Math.sin(angle) * 5)
+        ctx.lineTo(x + Math.cos(angle + 0.2) * 3, y + Math.sin(angle + 0.2) * 3)
+        ctx.closePath()
+        ctx.fill()
+      }
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#d97706')
+      bodyGrad.addColorStop(1, '#92400e')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#fef3c7'
+      ctx.beginPath()
+      ctx.ellipse(0, 4, BIRD_SIZE / 3, BIRD_SIZE / 3, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-4, -3, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(4, -3, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'platypus',
+    name: 'Утконос',
+    emoji: '🦆',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#92400e')
+      bodyGrad.addColorStop(1, '#78350f')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#d97706'
+      ctx.beginPath()
+      ctx.ellipse(10, 2, 6, 3, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-4, -3, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(4, -3, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'flamingo',
+    name: 'Фламинго',
+    emoji: '🦩',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#f9a8d4')
+      bodyGrad.addColorStop(1, '#ec4899')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#ec4899'
+      ctx.beginPath()
+      ctx.ellipse(8, -2, 5, 3, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#1e293b'
+      ctx.beginPath()
+      ctx.moveTo(12, -2)
+      ctx.lineTo(14, -1)
+      ctx.lineTo(12, 0)
+      ctx.closePath()
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-4, -3, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'peacock',
+    name: 'Павлин',
+    emoji: '🦚',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#06b6d4')
+      bodyGrad.addColorStop(1, '#0891b2')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#10b981'
+      for (let i = 0; i < 5; i++) {
+        const angle = (i / 5) * Math.PI - Math.PI / 2
+        const x = Math.cos(angle) * (BIRD_SIZE / 2 - 2)
+        const y = Math.sin(angle) * (BIRD_SIZE / 2 - 2)
+        ctx.beginPath()
+        ctx.arc(x, y, 3, 0, Math.PI * 2)
+        ctx.fill()
+      }
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-4, -3, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(4, -3, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'swan',
+    name: 'Лебедь',
+    emoji: '🦢',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#ffffff')
+      bodyGrad.addColorStop(1, '#e5e5e5')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#f97316'
+      ctx.beginPath()
+      ctx.ellipse(10, 0, 5, 2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-4, -3, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+  {
+    id: 'eagle',
+    name: 'Орёл',
+    emoji: '🦅',
+    draw: (ctx, bird, frame) => {
+      ctx.save()
+      ctx.translate(BIRD_X, bird.y)
+      ctx.rotate((bird.rotation * Math.PI) / 180)
+      const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
+      bodyGrad.addColorStop(0, '#78350f')
+      bodyGrad.addColorStop(1, '#451a03')
+      ctx.fillStyle = bodyGrad
+      ctx.beginPath()
+      ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#fbbf24'
+      ctx.beginPath()
+      ctx.moveTo(10, 0)
+      ctx.lineTo(15, 2)
+      ctx.lineTo(10, 4)
+      ctx.closePath()
+      ctx.fill()
+      const wingFlap = Math.sin(frame * 0.3) * 5
+      ctx.fillStyle = '#451a03'
+      ctx.beginPath()
+      ctx.ellipse(-BIRD_SIZE / 2 + 2, 0 + wingFlap, 6, 10, -0.3, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(BIRD_SIZE / 2 - 2, 0 + wingFlap, 6, 10, 0.3, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#000000'
+      ctx.beginPath()
+      ctx.arc(-4, -3, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(4, -3, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    },
+  },
+]
+
+// ===== 20 Backgrounds =====
+const BACKGROUNDS: Background[] = [
+  {
+    id: 'sky',
+    name: 'Небо',
+    emoji: '☀️',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#0ea5e9')
+      skyGrad.addColorStop(0.5, '#38bdf8')
+      skyGrad.addColorStop(1, '#7dd3fc')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'
+      const cloudOffset = (frame * 0.3) % (CANVAS_WIDTH + 200)
+      const drawCloud = (cx: number, cy: number, size: number) => {
+        const x = ((cx - cloudOffset + CANVAS_WIDTH + 200) % (CANVAS_WIDTH + 200)) - 100
+        ctx.beginPath()
+        ctx.arc(x, cy, size, 0, Math.PI * 2)
+        ctx.arc(x + size * 0.8, cy - size * 0.2, size * 0.7, 0, Math.PI * 2)
+        ctx.arc(x + size * 1.4, cy, size * 0.8, 0, Math.PI * 2)
+        ctx.arc(x - size * 0.5, cy + size * 0.1, size * 0.6, 0, Math.PI * 2)
+        ctx.fill()
+      }
+      drawCloud(100, 80, 25)
+      drawCloud(300, 120, 20)
+      drawCloud(200, 180, 15)
+    },
+  },
+  {
+    id: 'sunset',
+    name: 'Закат',
+    emoji: '🌅',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#7c2d12')
+      skyGrad.addColorStop(0.3, '#ea580c')
+      skyGrad.addColorStop(0.6, '#f97316')
+      skyGrad.addColorStop(1, '#fbbf24')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.fillStyle = '#fbbf24'
+      ctx.beginPath()
+      ctx.arc(CANVAS_WIDTH / 2, CANVAS_HEIGHT - GROUND_HEIGHT - 50, 40, 0, Math.PI * 2)
+      ctx.fill()
+    },
+  },
+  {
+    id: 'night',
+    name: 'Ночь',
+    emoji: '🌙',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#0f172a')
+      skyGrad.addColorStop(1, '#1e293b')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.fillStyle = '#ffffff'
+      for (let i = 0; i < 50; i++) {
+        const x = (i * 37) % CANVAS_WIDTH
+        const y = (i * 23) % (CANVAS_HEIGHT - GROUND_HEIGHT - 50)
+        const size = (i % 3) + 1
+        ctx.globalAlpha = 0.5 + Math.sin(frame * 0.02 + i) * 0.3
+        ctx.beginPath()
+        ctx.arc(x, y, size, 0, Math.PI * 2)
+        ctx.fill()
+      }
+      ctx.globalAlpha = 1
+      ctx.fillStyle = '#fef3c7'
+      ctx.beginPath()
+      ctx.arc(320, 80, 30, 0, Math.PI * 2)
+      ctx.fill()
+    },
+  },
+  {
+    id: 'forest',
+    name: 'Лес',
+    emoji: '🌲',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#064e3b')
+      skyGrad.addColorStop(1, '#065f46')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.fillStyle = '#047857'
+      for (let i = 0; i < 8; i++) {
+        const x = i * 60
+        ctx.beginPath()
+        ctx.moveTo(x, CANVAS_HEIGHT - GROUND_HEIGHT)
+        ctx.lineTo(x + 30, CANVAS_HEIGHT - GROUND_HEIGHT - 100)
+        ctx.lineTo(x + 60, CANVAS_HEIGHT - GROUND_HEIGHT)
+        ctx.closePath()
+        ctx.fill()
+      }
+    },
+  },
+  {
+    id: 'ocean',
+    name: 'Океан',
+    emoji: '🌊',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#0c4a6e')
+      skyGrad.addColorStop(1, '#0369a1')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)'
+      ctx.lineWidth = 2
+      for (let i = 0; i < 5; i++) {
+        const y = 100 + i * 80
+        ctx.beginPath()
+        for (let x = 0; x < CANVAS_WIDTH; x += 10) {
+          const wave = Math.sin((x + frame * 2) * 0.02 + i) * 10
+          if (x === 0) ctx.moveTo(x, y + wave)
+          else ctx.lineTo(x, y + wave)
+        }
+        ctx.stroke()
+      }
+    },
+  },
+  {
+    id: 'space',
+    name: 'Космос',
+    emoji: '🚀',
+    draw: (ctx, frame) => {
+      ctx.fillStyle = '#000000'
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.fillStyle = '#ffffff'
+      for (let i = 0; i < 100; i++) {
+        const x = (i * 41) % CANVAS_WIDTH
+        const y = (i * 29) % (CANVAS_HEIGHT - GROUND_HEIGHT)
+        const size = (i % 2) + 0.5
+        ctx.globalAlpha = 0.5 + Math.sin(frame * 0.05 + i) * 0.5
+        ctx.beginPath()
+        ctx.arc(x, y, size, 0, Math.PI * 2)
+        ctx.fill()
+      }
+      ctx.globalAlpha = 1
+    },
+  },
+  {
+    id: 'desert',
+    name: 'Пустыня',
+    emoji: '🏜️',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#fef3c7')
+      skyGrad.addColorStop(1, '#fbbf24')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.fillStyle = '#f59e0b'
+      ctx.beginPath()
+      ctx.arc(CANVAS_WIDTH - 80, 100, 50, 0, Math.PI * 2)
+      ctx.fill()
+    },
+  },
+  {
+    id: 'snow',
+    name: 'Снег',
+    emoji: '❄️',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#e0f2fe')
+      skyGrad.addColorStop(1, '#bae6fd')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.fillStyle = '#ffffff'
+      for (let i = 0; i < 30; i++) {
+        const x = (i * 31 + frame) % CANVAS_WIDTH
+        const y = (i * 23 + frame * 2) % (CANVAS_HEIGHT - GROUND_HEIGHT)
+        ctx.beginPath()
+        ctx.arc(x, y, 3, 0, Math.PI * 2)
+        ctx.fill()
+      }
+    },
+  },
+  {
+    id: 'candy',
+    name: 'Конфеты',
+    emoji: '🍭',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#fbcfe8')
+      skyGrad.addColorStop(0.5, '#f9a8d4')
+      skyGrad.addColorStop(1, '#f472b6')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+    },
+  },
+  {
+    id: 'rainbow',
+    name: 'Радуга',
+    emoji: '🌈',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#ef4444')
+      skyGrad.addColorStop(0.17, '#f97316')
+      skyGrad.addColorStop(0.33, '#eab308')
+      skyGrad.addColorStop(0.5, '#22c55e')
+      skyGrad.addColorStop(0.67, '#3b82f6')
+      skyGrad.addColorStop(0.83, '#8b5cf6')
+      skyGrad.addColorStop(1, '#ec4899')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+    },
+  },
+  {
+    id: 'volcano',
+    name: 'Вулкан',
+    emoji: '🌋',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#1c1917')
+      skyGrad.addColorStop(0.5, '#7c2d12')
+      skyGrad.addColorStop(1, '#dc2626')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.fillStyle = '#f97316'
+      ctx.beginPath()
+      ctx.arc(CANVAS_WIDTH / 2, 50, 30 + Math.sin(frame * 0.1) * 5, 0, Math.PI * 2)
+      ctx.fill()
+    },
+  },
+  {
+    id: 'underwater',
+    name: 'Под водой',
+    emoji: '🐠',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#0e7490')
+      skyGrad.addColorStop(1, '#155e75')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'
+      for (let i = 0; i < 15; i++) {
+        const x = (i * 47) % CANVAS_WIDTH
+        const y = ((i * 31 + frame) % (CANVAS_HEIGHT - GROUND_HEIGHT))
+        ctx.beginPath()
+        ctx.arc(x, y, 4, 0, Math.PI * 2)
+        ctx.fill()
+      }
+    },
+  },
+  {
+    id: 'autumn',
+    name: 'Осень',
+    emoji: '🍂',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#92400e')
+      skyGrad.addColorStop(0.5, '#b45309')
+      skyGrad.addColorStop(1, '#d97706')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.fillStyle = '#dc2626'
+      for (let i = 0; i < 10; i++) {
+        const x = (i * 43 + frame) % CANVAS_WIDTH
+        const y = (i * 29 + frame * 1.5) % (CANVAS_HEIGHT - GROUND_HEIGHT)
+        ctx.beginPath()
+        ctx.ellipse(x, y, 5, 8, Math.PI / 4, 0, Math.PI * 2)
+        ctx.fill()
+      }
+    },
+  },
+  {
+    id: 'spring',
+    name: 'Весна',
+    emoji: '🌸',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#fce7f3')
+      skyGrad.addColorStop(1, '#fbcfe8')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.fillStyle = '#f9a8d4'
+      for (let i = 0; i < 20; i++) {
+        const x = (i * 37 + frame * 0.5) % CANVAS_WIDTH
+        const y = (i * 23 + frame) % (CANVAS_HEIGHT - GROUND_HEIGHT)
+        ctx.beginPath()
+        ctx.arc(x, y, 4, 0, Math.PI * 2)
+        ctx.fill()
+      }
+    },
+  },
+  {
+    id: 'summer',
+    name: 'Лето',
+    emoji: '☀️',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#06b6d4')
+      skyGrad.addColorStop(1, '#0891b2')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.fillStyle = '#fbbf24'
+      ctx.beginPath()
+      ctx.arc(80, 80, 40, 0, Math.PI * 2)
+      ctx.fill()
+    },
+  },
+  {
+    id: 'winter',
+    name: 'Зима',
+    emoji: '⛄',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#cbd5e1')
+      skyGrad.addColorStop(1, '#94a3b8')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.fillStyle = '#ffffff'
+      for (let i = 0; i < 40; i++) {
+        const x = (i * 29 + frame * 0.8) % CANVAS_WIDTH
+        const y = (i * 19 + frame * 1.2) % (CANVAS_HEIGHT - GROUND_HEIGHT)
+        ctx.beginPath()
+        ctx.arc(x, y, 2, 0, Math.PI * 2)
+        ctx.fill()
+      }
+    },
+  },
+  {
+    id: 'galaxy',
+    name: 'Галактика',
+    emoji: '🌌',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createRadialGradient(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 50, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 400)
+      skyGrad.addColorStop(0, '#7c3aed')
+      skyGrad.addColorStop(0.5, '#4c1d95')
+      skyGrad.addColorStop(1, '#1e1b4b')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.fillStyle = '#ffffff'
+      for (let i = 0; i < 80; i++) {
+        const x = (i * 43) % CANVAS_WIDTH
+        const y = (i * 31) % (CANVAS_HEIGHT - GROUND_HEIGHT)
+        ctx.globalAlpha = 0.3 + Math.sin(frame * 0.03 + i) * 0.3
+        ctx.beginPath()
+        ctx.arc(x, y, 1, 0, Math.PI * 2)
+        ctx.fill()
+      }
+      ctx.globalAlpha = 1
+    },
+  },
+  {
+    id: 'city',
+    name: 'Город',
+    emoji: '🏙️',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#334155')
+      skyGrad.addColorStop(1, '#475569')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.fillStyle = '#1e293b'
+      for (let i = 0; i < 10; i++) {
+        const x = i * 45
+        const height = 100 + (i % 3) * 50
+        ctx.fillRect(x, CANVAS_HEIGHT - GROUND_HEIGHT - height, 40, height)
+      }
+    },
+  },
+  {
+    id: 'jungle',
+    name: 'Джунгли',
+    emoji: '🌴',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#14532d')
+      skyGrad.addColorStop(1, '#166534')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.fillStyle = '#15803d'
+      for (let i = 0; i < 12; i++) {
+        const x = i * 40
+        ctx.beginPath()
+        ctx.ellipse(x, CANVAS_HEIGHT - GROUND_HEIGHT - 50, 30, 80, 0, 0, Math.PI * 2)
+        ctx.fill()
+      }
+    },
+  },
+  {
+    id: 'aurora',
+    name: 'Северное сияние',
+    emoji: '✨',
+    draw: (ctx, frame) => {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
+      skyGrad.addColorStop(0, '#0f172a')
+      skyGrad.addColorStop(0.5, '#064e3b')
+      skyGrad.addColorStop(1, '#0f172a')
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
+      ctx.fillStyle = '#10b981'
+      ctx.globalAlpha = 0.3 + Math.sin(frame * 0.02) * 0.2
+      ctx.fillRect(0, 100, CANVAS_WIDTH, 150)
+      ctx.globalAlpha = 1
+    },
+  },
 ]
 
 // ===== Helper Functions =====
@@ -1209,6 +2778,10 @@ export default function App() {
     const saved = localStorage.getItem('flappy-character')
     return CHARACTERS.find(c => c.id === saved) || CHARACTERS[0]
   })
+  const [selectedBackground, setSelectedBackground] = useState<Background>(() => {
+    const saved = localStorage.getItem('flappy-background')
+    return BACKGROUNDS.find(b => b.id === saved) || BACKGROUNDS[0]
+  })
   const [bestScores, setBestScores] = useState<Record<string, number>>(() => {
     const saved: Record<string, number> = {}
     Object.keys(DIFFICULTIES).forEach((key) => {
@@ -1258,10 +2831,11 @@ export default function App() {
     setDisplayState('playing')
     setShowDifficultyPicker(false)
     localStorage.setItem('flappy-character', selectedCharacter.id)
+    localStorage.setItem('flappy-background', selectedBackground.id)
     resetGame()
     birdRef.current.velocity = DIFFICULTIES[selectedDifficulty].jumpForce
     spawnParticles(BIRD_X, birdRef.current.y, 5, '#fbbf24')
-  }, [selectedDifficulty, selectedCharacter, resetGame, spawnParticles])
+  }, [selectedDifficulty, selectedCharacter, selectedBackground, resetGame, spawnParticles])
 
   // ===== Jump =====
   const jump = useCallback(() => {
@@ -1377,41 +2951,8 @@ export default function App() {
 
   // ===== Draw Background =====
   const drawBackground = useCallback((ctx: CanvasRenderingContext2D) => {
-    const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT - GROUND_HEIGHT)
-    skyGrad.addColorStop(0, '#0ea5e9')
-    skyGrad.addColorStop(0.5, '#38bdf8')
-    skyGrad.addColorStop(1, '#7dd3fc')
-    ctx.fillStyle = skyGrad
-    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
-
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'
-    const cloudOffset = (frameRef.current * 0.3) % (CANVAS_WIDTH + 200)
-    const drawCloud = (cx: number, cy: number, size: number) => {
-      const x = ((cx - cloudOffset + CANVAS_WIDTH + 200) % (CANVAS_WIDTH + 200)) - 100
-      ctx.beginPath()
-      ctx.arc(x, cy, size, 0, Math.PI * 2)
-      ctx.arc(x + size * 0.8, cy - size * 0.2, size * 0.7, 0, Math.PI * 2)
-      ctx.arc(x + size * 1.4, cy, size * 0.8, 0, Math.PI * 2)
-      ctx.arc(x - size * 0.5, cy + size * 0.1, size * 0.6, 0, Math.PI * 2)
-      ctx.fill()
-    }
-    drawCloud(100, 80, 25)
-    drawCloud(300, 120, 20)
-    drawCloud(200, 180, 15)
-    drawCloud(50, 250, 18)
-    drawCloud(350, 60, 22)
-
-    ctx.fillStyle = 'rgba(34, 197, 94, 0.2)'
-    ctx.beginPath()
-    ctx.moveTo(0, CANVAS_HEIGHT - GROUND_HEIGHT)
-    for (let x = 0; x <= CANVAS_WIDTH; x += 40) {
-      const h = Math.sin(x * 0.015 + 1) * 30 + Math.sin(x * 0.008) * 20
-      ctx.lineTo(x, CANVAS_HEIGHT - GROUND_HEIGHT - 40 - h)
-    }
-    ctx.lineTo(CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_HEIGHT)
-    ctx.closePath()
-    ctx.fill()
-  }, [])
+    selectedBackground.draw(ctx, frameRef.current)
+  }, [selectedBackground])
 
   // ===== Draw Ground =====
   const drawGround = useCallback((ctx: CanvasRenderingContext2D) => {
@@ -1882,6 +3423,31 @@ export default function App() {
             >
               <span className="text-2xl mb-0.5">{char.emoji}</span>
               <span className="text-[9px] text-gray-300 font-medium truncate w-full text-center px-1">{char.name}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Background Selection Panel */}
+      <div className="mt-4 w-full max-w-2xl">
+        <div className="text-center mb-3">
+          <span className="text-gray-400 text-sm">Выберите фон:</span>
+          <span className="ml-2 text-white font-bold">{selectedBackground.emoji} {selectedBackground.name}</span>
+        </div>
+        <div className="flex gap-2 overflow-x-auto pb-2 px-2 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900">
+          {BACKGROUNDS.map((bg) => (
+            <button
+              key={bg.id}
+              onClick={() => setSelectedBackground(bg)}
+              className={`flex-shrink-0 flex flex-col items-center justify-center w-16 h-16 rounded-xl border-2 transition-all duration-200 hover:scale-110 ${
+                selectedBackground.id === bg.id
+                  ? 'bg-purple-500/30 border-purple-400 scale-110 shadow-lg shadow-purple-500/50'
+                  : 'bg-gray-800/50 border-gray-700 hover:border-gray-500 hover:bg-gray-700/50'
+              }`}
+              title={bg.name}
+            >
+              <span className="text-2xl mb-0.5">{bg.emoji}</span>
+              <span className="text-[9px] text-gray-300 font-medium truncate w-full text-center px-1">{bg.name}</span>
             </button>
           ))}
         </div>
