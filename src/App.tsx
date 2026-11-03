@@ -2782,6 +2782,14 @@ export default function App() {
     const saved = localStorage.getItem('flappy-background')
     return BACKGROUNDS.find(b => b.id === saved) || BACKGROUNDS[0]
   })
+  const [customGravity, setCustomGravity] = useState(() => {
+    const saved = localStorage.getItem('flappy-gravity')
+    return saved ? parseFloat(saved) : 0.35
+  })
+  const [customSpeed, setCustomSpeed] = useState(() => {
+    const saved = localStorage.getItem('flappy-speed')
+    return saved ? parseFloat(saved) : 2.5
+  })
   const [bestScores, setBestScores] = useState<Record<string, number>>(() => {
     const saved: Record<string, number> = {}
     Object.keys(DIFFICULTIES).forEach((key) => {
@@ -2832,10 +2840,12 @@ export default function App() {
     setShowDifficultyPicker(false)
     localStorage.setItem('flappy-character', selectedCharacter.id)
     localStorage.setItem('flappy-background', selectedBackground.id)
+    localStorage.setItem('flappy-gravity', customGravity.toString())
+    localStorage.setItem('flappy-speed', customSpeed.toString())
     resetGame()
     birdRef.current.velocity = DIFFICULTIES[selectedDifficulty].jumpForce
     spawnParticles(BIRD_X, birdRef.current.y, 5, '#fbbf24')
-  }, [selectedDifficulty, selectedCharacter, selectedBackground, resetGame, spawnParticles])
+  }, [selectedDifficulty, selectedCharacter, selectedBackground, customGravity, customSpeed, resetGame, spawnParticles])
 
   // ===== Jump =====
   const jump = useCallback(() => {
@@ -3051,11 +3061,11 @@ export default function App() {
 
       if (state === 'playing') {
         const bird = birdRef.current
-        bird.velocity += diff.gravity
+        bird.velocity += customGravity
         bird.y += bird.velocity
         bird.rotation = lerp(bird.rotation, Math.min(bird.velocity * 4, 70), 0.1)
 
-        groundOffsetRef.current -= diff.pipeSpeed
+        groundOffsetRef.current -= customSpeed
 
         const now = Date.now()
         if (now - lastPipeTimeRef.current > diff.pipeSpawnInterval) {
@@ -3067,7 +3077,7 @@ export default function App() {
         }
 
         pipesRef.current.forEach((pipe) => {
-          pipe.x -= diff.pipeSpeed
+          pipe.x -= customSpeed
           if (!pipe.passed && pipe.x + PIPE_WIDTH < BIRD_X) {
             pipe.passed = true
             scoreRef.current++
@@ -3104,7 +3114,7 @@ export default function App() {
       } else if (state === 'gameover') {
         const bird = birdRef.current
         if (bird.y < CANVAS_HEIGHT - GROUND_HEIGHT - BIRD_SIZE / 2) {
-          bird.velocity += diff.gravity * 0.5 // Slower fall after death
+          bird.velocity += customGravity * 0.5 // Slower fall after death
           bird.y += bird.velocity
           bird.rotation = lerp(bird.rotation, 90, 0.08)
         }
@@ -3161,7 +3171,7 @@ export default function App() {
     return () => {
       cancelAnimationFrame(animFrameRef.current)
     }
-  }, [bestScores, checkCollision, drawBackground, drawCharacter, drawDifficultyBadge, drawGround, drawParticles, drawPipe, drawRainbowTrail, drawScore, spawnParticles])
+  }, [bestScores, checkCollision, customGravity, customSpeed, drawBackground, drawCharacter, drawDifficultyBadge, drawGround, drawParticles, drawPipe, drawRainbowTrail, drawScore, spawnParticles])
 
   // ===== Keyboard Handler =====
   useEffect(() => {
@@ -3454,6 +3464,66 @@ export default function App() {
               <span className="text-[9px] text-gray-500 mt-0.5">{diff.description}</span>
             </button>
           ))}
+        </div>
+      </div>
+
+      {/* Custom Settings Panel */}
+      <div className="mt-4 w-full max-w-3xl">
+        <div className="text-center mb-3">
+          <span className="text-gray-400 text-sm">Настройки физики:</span>
+        </div>
+        <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700">
+          <div className="flex flex-col md:flex-row gap-6">
+            {/* Gravity Slider */}
+            <div className="flex-1">
+              <div className="flex justify-between items-center mb-2">
+                <label className="text-sm text-gray-300 font-medium">
+                  🌍 Гравитация
+                </label>
+                <span className="text-sm text-indigo-400 font-bold">
+                  {customGravity.toFixed(2)}
+                </span>
+              </div>
+              <input
+                type="range"
+                min="0.1"
+                max="1.0"
+                step="0.05"
+                value={customGravity}
+                onChange={(e) => setCustomGravity(parseFloat(e.target.value))}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+              />
+              <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <span>Легко</span>
+                <span>Сложно</span>
+              </div>
+            </div>
+
+            {/* Speed Slider */}
+            <div className="flex-1">
+              <div className="flex justify-between items-center mb-2">
+                <label className="text-sm text-gray-300 font-medium">
+                  ⚡ Скорость
+                </label>
+                <span className="text-sm text-purple-400 font-bold">
+                  {customSpeed.toFixed(1)}
+                </span>
+              </div>
+              <input
+                type="range"
+                min="1.0"
+                max="5.0"
+                step="0.1"
+                value={customSpeed}
+                onChange={(e) => setCustomSpeed(parseFloat(e.target.value))}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+              />
+              <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <span>Медленно</span>
+                <span>Быстро</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
