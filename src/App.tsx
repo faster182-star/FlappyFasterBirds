@@ -571,21 +571,65 @@ export default function App() {
   // ===== Keyboard Handler =====
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const state = gameStateRef.current
+
       if (e.code === 'Space' || e.code === 'ArrowUp') {
         e.preventDefault()
-        if (gameStateRef.current === 'playing') {
+        if (state === 'playing') {
           jump()
-        } else if (gameStateRef.current === 'gameover' && frameRef.current > 30) {
+        } else if (state === 'menu') {
+          // Space in menu starts the game
+          startGame()
+        } else if (state === 'gameover' && frameRef.current > 30) {
           gameStateRef.current = 'menu'
           setDisplayState('menu')
-          setShowDifficultyPicker(false)
           resetGame()
         }
       }
+
+      // Number keys 1-4 for quick difficulty selection in menu
+      if (state === 'menu') {
+        const keys = Object.keys(DIFFICULTIES)
+        if (e.key === '1') setSelectedDifficulty(keys[0])
+        if (e.key === '2') setSelectedDifficulty(keys[1])
+        if (e.key === '3') setSelectedDifficulty(keys[2])
+        if (e.key === '4') setSelectedDifficulty(keys[3])
+      }
     }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [jump, resetGame])
+
+    // Use capture phase to ensure we get the event first
+    document.addEventListener('keydown', handleKeyDown, true)
+    window.addEventListener('keydown', handleKeyDown, true)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown, true)
+      window.removeEventListener('keydown', handleKeyDown, true)
+    }
+  }, [jump, resetGame, startGame])
+
+  // ===== Focus management =====
+  useEffect(() => {
+    // Focus the canvas when game starts
+    if (displayState === 'playing' && canvasRef.current) {
+      canvasRef.current.focus()
+    }
+  }, [displayState])
+
+  // Ensure page gets focus on load (important for iframes)
+  useEffect(() => {
+    const handleFocus = () => {
+      if (canvasRef.current) {
+        canvasRef.current.focus()
+      }
+    }
+    window.addEventListener('focus', handleFocus)
+    document.addEventListener('click', handleFocus)
+    // Initial focus
+    handleFocus()
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+      document.removeEventListener('click', handleFocus)
+    }
+  }, [])
 
   // ===== Canvas Click (only for playing) =====
   const handleCanvasClick = () => {
@@ -616,7 +660,8 @@ export default function App() {
           ref={canvasRef}
           width={CANVAS_WIDTH}
           height={CANVAS_HEIGHT}
-          className="block"
+          className="block outline-none"
+          tabIndex={0}
           style={{ cursor: displayState === 'playing' ? 'pointer' : 'default' }}
           onClick={handleCanvasClick}
           onTouchStart={handleTouchStart}
