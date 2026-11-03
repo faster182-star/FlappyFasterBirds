@@ -1205,7 +1205,6 @@ export default function App() {
   const [score, setScore] = useState(0)
   const [selectedDifficulty, setSelectedDifficulty] = useState('normal')
   const [showDifficultyPicker, setShowDifficultyPicker] = useState(false)
-  const [showCharacterPicker, setShowCharacterPicker] = useState(false)
   const [selectedCharacter, setSelectedCharacter] = useState<Character>(() => {
     const saved = localStorage.getItem('flappy-character')
     return CHARACTERS.find(c => c.id === saved) || CHARACTERS[0]
@@ -1258,7 +1257,6 @@ export default function App() {
     gameStateRef.current = 'playing'
     setDisplayState('playing')
     setShowDifficultyPicker(false)
-    setShowCharacterPicker(false)
     localStorage.setItem('flappy-character', selectedCharacter.id)
     resetGame()
     birdRef.current.velocity = DIFFICULTIES[selectedDifficulty].jumpForce
@@ -1685,25 +1683,12 @@ export default function App() {
         />
 
         {/* Menu Overlay */}
-        {displayState === 'menu' && !showDifficultyPicker && !showCharacterPicker && (
+        {displayState === 'menu' && !showDifficultyPicker && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
             <div className="text-center">
               <div className="text-6xl mb-4 animate-bounce">{selectedCharacter.emoji}</div>
               <h2 className="text-3xl font-bold text-white mb-6">Готовы?</h2>
-              
-              {/* Character selector */}
-              <div className="mb-6">
-                <p className="text-gray-400 text-sm mb-3">Персонаж:</p>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setShowCharacterPicker(true)
-                  }}
-                  className="px-6 py-3 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 transition-all text-lg font-medium"
-                >
-                  {selectedCharacter.emoji} {selectedCharacter.name}
-                </button>
-              </div>
+              <p className="text-gray-300 mb-4">Выбрано: {selectedCharacter.emoji} {selectedCharacter.name}</p>
 
               {/* Difficulty selector */}
               <div className="mb-6">
@@ -1762,44 +1747,7 @@ export default function App() {
           </div>
         )}
 
-        {/* Character Picker Overlay */}
-        {displayState === 'menu' && showCharacterPicker && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
-            <h2 className="text-2xl font-bold text-white mb-2">Выберите персонажа</h2>
-            <p className="text-gray-400 text-sm mb-6">20 животных на выбор</p>
-            
-            <div className="grid grid-cols-4 gap-3 max-w-md w-full mb-4">
-              {CHARACTERS.map((char) => (
-                <button
-                  key={char.id}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setSelectedCharacter(char)
-                    setShowCharacterPicker(false)
-                  }}
-                  className={`p-3 rounded-xl border transition-all duration-200 hover:scale-105 ${
-                    selectedCharacter.id === char.id
-                      ? 'bg-indigo-500/20 border-indigo-500/50 scale-105'
-                      : 'bg-white/5 border-white/10 hover:bg-white/10'
-                  }`}
-                >
-                  <div className="text-3xl mb-1">{char.emoji}</div>
-                  <div className="text-xs text-white font-medium">{char.name}</div>
-                </button>
-              ))}
-            </div>
 
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                setShowCharacterPicker(false)
-              }}
-              className="px-4 py-2 text-gray-400 hover:text-white text-sm transition-colors"
-            >
-              ← Назад
-            </button>
-          </div>
-        )}
 
         {/* Game Over Overlay */}
         {displayState === 'gameover' && (
@@ -1860,10 +1808,6 @@ export default function App() {
       {/* Score Display */}
       <div className="mt-4 flex gap-6">
         <div className="text-center">
-          <div className="text-gray-500 text-xs uppercase tracking-wider">Персонаж</div>
-          <div className="text-xl font-bold">{selectedCharacter.emoji}</div>
-        </div>
-        <div className="text-center">
           <div className="text-gray-500 text-xs uppercase tracking-wider">Счёт</div>
           <div className="text-xl font-bold text-white">{score}</div>
         </div>
@@ -1876,6 +1820,31 @@ export default function App() {
         <div className="text-center">
           <div className="text-gray-500 text-xs uppercase tracking-wider">Рекорд</div>
           <div className="text-xl font-bold text-yellow-400">{bestScores[selectedDifficulty] || 0}</div>
+        </div>
+      </div>
+
+      {/* Character Selection Panel */}
+      <div className="mt-6 w-full max-w-2xl">
+        <div className="text-center mb-3">
+          <span className="text-gray-400 text-sm">Выберите персонажа:</span>
+          <span className="ml-2 text-white font-bold">{selectedCharacter.emoji} {selectedCharacter.name}</span>
+        </div>
+        <div className="flex gap-2 overflow-x-auto pb-2 px-2 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900">
+          {CHARACTERS.map((char) => (
+            <button
+              key={char.id}
+              onClick={() => setSelectedCharacter(char)}
+              className={`flex-shrink-0 flex flex-col items-center justify-center w-16 h-16 rounded-xl border-2 transition-all duration-200 hover:scale-110 ${
+                selectedCharacter.id === char.id
+                  ? 'bg-indigo-500/30 border-indigo-400 scale-110 shadow-lg shadow-indigo-500/50'
+                  : 'bg-gray-800/50 border-gray-700 hover:border-gray-500 hover:bg-gray-700/50'
+              }`}
+              title={char.name}
+            >
+              <span className="text-2xl mb-0.5">{char.emoji}</span>
+              <span className="text-[9px] text-gray-300 font-medium truncate w-full text-center px-1">{char.name}</span>
+            </button>
+          ))}
         </div>
       </div>
 
