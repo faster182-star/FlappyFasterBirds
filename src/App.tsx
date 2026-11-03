@@ -2993,53 +2993,18 @@ export default function App() {
     if (gameStateRef.current !== 'playing') return
 
     if (selectedTrail.type === 'nyan') {
-      // Nyan Cat style - rainbow stripes that follow character movement
+      // Nyan Cat style - simple rainbow stripes from character to left edge
       const stripeHeight = 5
       const totalHeight = selectedTrail.colors.length * stripeHeight
       
       // Start from character's left edge
       const startX = BIRD_X - BIRD_SIZE / 2
 
-      // Add current position to history every frame
-      trailHistoryRef.current.unshift({ x: startX, y: bird.y })
-      
-      // Keep only last N positions based on trail length
-      const maxHistory = trailLength * 2
-      if (trailHistoryRef.current.length > maxHistory) {
-        trailHistoryRef.current = trailHistoryRef.current.slice(0, maxHistory)
-      }
-
-      // Draw each color stripe
+      // Draw each color stripe as a simple rectangle
       selectedTrail.colors.forEach((color, colorIndex) => {
         ctx.fillStyle = color
-        ctx.beginPath()
-        
-        // Calculate offset for this stripe relative to bird center
-        const stripeOffset = colorIndex * stripeHeight - totalHeight / 2
-        
-        // Start from character (newest position)
-        ctx.moveTo(startX, bird.y + stripeOffset)
-        
-        // Draw top edge of stripe following the history (from newest to oldest)
-        for (let i = 0; i < trailHistoryRef.current.length; i++) {
-          const pos = trailHistoryRef.current[i]
-          ctx.lineTo(pos.x, pos.y + stripeOffset)
-        }
-        
-        // Draw left edge (at the oldest position)
-        const oldestPos = trailHistoryRef.current[trailHistoryRef.current.length - 1]
-        if (oldestPos) {
-          ctx.lineTo(oldestPos.x, oldestPos.y + stripeOffset + stripeHeight)
-        }
-        
-        // Draw bottom edge back to character (from oldest to newest)
-        for (let i = trailHistoryRef.current.length - 1; i >= 0; i--) {
-          const pos = trailHistoryRef.current[i]
-          ctx.lineTo(pos.x, pos.y + stripeOffset + stripeHeight)
-        }
-        
-        ctx.closePath()
-        ctx.fill()
+        const y = bird.y - totalHeight / 2 + colorIndex * stripeHeight
+        ctx.fillRect(0, y, startX, stripeHeight)
       })
     } else {
       // Particle-based trails
