@@ -2885,10 +2885,19 @@ export default function App() {
     const saved = localStorage.getItem('flappy-trail')
     return TRAILS.find(t => t.id === saved) || TRAILS[0]
   })
+  const selectedTrailRef = useRef<Trail>(selectedTrail)
+  useEffect(() => {
+    selectedTrailRef.current = selectedTrail
+  }, [selectedTrail])
+  
   const [trailLength, setTrailLength] = useState(() => {
     const saved = localStorage.getItem('flappy-trail-length')
     return saved ? parseInt(saved) : 25
   })
+  const trailLengthRef = useRef(trailLength)
+  useEffect(() => {
+    trailLengthRef.current = trailLength
+  }, [trailLength])
   const [bestScores, setBestScores] = useState<Record<string, number>>(() => {
     const saved: Record<string, number> = {}
     Object.keys(DIFFICULTIES).forEach((key) => {
@@ -2990,39 +2999,38 @@ export default function App() {
 
   // ===== Draw Trail =====
   const drawTrail = useCallback((ctx: CanvasRenderingContext2D, bird: Bird) => {
-    if (gameStateRef.current !== 'playing') return
+    const trail = selectedTrailRef.current
+    const length = trailLengthRef.current
+    
+    // Always draw rainbow stripes
+    const stripeHeight = 8
+    const totalHeight = trail.colors.length * stripeHeight
+    const startX = BIRD_X - BIRD_SIZE / 2
 
-    if (selectedTrail.type === 'nyan') {
-      // Nyan Cat style - simple rainbow stripes from character to left edge
-      const stripeHeight = 5
-      const totalHeight = selectedTrail.colors.length * stripeHeight
-      
-      // Start from character's left edge
-      const startX = BIRD_X - BIRD_SIZE / 2
+    // Draw rainbow stripes
+    trail.colors.forEach((color, colorIndex) => {
+      ctx.fillStyle = color
+      const y = bird.y - totalHeight / 2 + colorIndex * stripeHeight
+      ctx.fillRect(0, y, startX, stripeHeight)
+    })
 
-      // Draw each color stripe as a simple rectangle
-      selectedTrail.colors.forEach((color, colorIndex) => {
-        ctx.fillStyle = color
-        const y = bird.y - totalHeight / 2 + colorIndex * stripeHeight
-        ctx.fillRect(0, y, startX, stripeHeight)
-      })
-    } else {
-      // Particle-based trails
+    // Draw particles for non-nyan trails
+    if (trail.type !== 'nyan' && gameStateRef.current === 'playing') {
       if (frameRef.current % 2 === 0) {
-        const colorIndex = Math.floor(frameRef.current / 2) % selectedTrail.colors.length
+        const colorIndex = Math.floor(frameRef.current / 2) % trail.colors.length
         particlesRef.current.push({
           x: BIRD_X - BIRD_SIZE / 2,
           y: bird.y,
           vx: -1 - Math.random() * 0.5,
           vy: (Math.random() - 0.5) * 0.5,
           life: 1,
-          maxLife: trailLength,
-          color: selectedTrail.colors[colorIndex],
+          maxLife: length,
+          color: trail.colors[colorIndex],
           size: 4 + Math.random() * 2,
         })
       }
     }
-  }, [selectedTrail, trailLength])
+  }, [])
 
   // ===== Draw Character =====
   const drawCharacter = useCallback((ctx: CanvasRenderingContext2D, bird: Bird) => {
@@ -3278,7 +3286,7 @@ export default function App() {
     return () => {
       cancelAnimationFrame(animFrameRef.current)
     }
-  }, [bestScores, checkCollision, customGravity, customSpeed, drawBackground, drawCharacter, drawDifficultyBadge, drawGround, drawParticles, drawPipe, drawTrail, drawScore, spawnParticles])
+  }, [bestScores, checkCollision, customGravity, customSpeed, drawBackground, drawCharacter, drawDifficultyBadge, drawGround, drawParticles, drawPipe, drawScore, spawnParticles])
 
   // ===== Keyboard Handler =====
   useEffect(() => {
