@@ -3404,50 +3404,50 @@ export default function App() {
       </div>
 
       {/* Character Selection Panel */}
-      <div className="mt-6 w-full max-w-2xl">
+      <div className="mt-6 w-full max-w-3xl">
         <div className="text-center mb-3">
           <span className="text-gray-400 text-sm">Выберите персонажа:</span>
           <span className="ml-2 text-white font-bold">{selectedCharacter.emoji} {selectedCharacter.name}</span>
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-2 px-2 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900">
+        <div className="flex flex-wrap gap-2 justify-center px-2">
           {CHARACTERS.map((char) => (
             <button
               key={char.id}
               onClick={() => setSelectedCharacter(char)}
-              className={`flex-shrink-0 flex flex-col items-center justify-center w-16 h-16 rounded-xl border-2 transition-all duration-200 hover:scale-110 ${
+              className={`flex flex-col items-center justify-center w-14 h-14 rounded-xl border-2 transition-all duration-200 hover:scale-110 ${
                 selectedCharacter.id === char.id
                   ? 'bg-indigo-500/30 border-indigo-400 scale-110 shadow-lg shadow-indigo-500/50'
                   : 'bg-gray-800/50 border-gray-700 hover:border-gray-500 hover:bg-gray-700/50'
               }`}
               title={char.name}
             >
-              <span className="text-2xl mb-0.5">{char.emoji}</span>
-              <span className="text-[9px] text-gray-300 font-medium truncate w-full text-center px-1">{char.name}</span>
+              <span className="text-xl mb-0.5">{char.emoji}</span>
+              <span className="text-[8px] text-gray-300 font-medium truncate w-full text-center px-0.5">{char.name}</span>
             </button>
           ))}
         </div>
       </div>
 
       {/* Background Selection Panel */}
-      <div className="mt-4 w-full max-w-2xl">
+      <div className="mt-4 w-full max-w-3xl">
         <div className="text-center mb-3">
           <span className="text-gray-400 text-sm">Выберите фон:</span>
           <span className="ml-2 text-white font-bold">{selectedBackground.emoji} {selectedBackground.name}</span>
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-2 px-2 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900">
+        <div className="flex flex-wrap gap-2 justify-center px-2">
           {BACKGROUNDS.map((bg) => (
             <button
               key={bg.id}
               onClick={() => setSelectedBackground(bg)}
-              className={`flex-shrink-0 flex flex-col items-center justify-center w-16 h-16 rounded-xl border-2 transition-all duration-200 hover:scale-110 ${
+              className={`flex flex-col items-center justify-center w-14 h-14 rounded-xl border-2 transition-all duration-200 hover:scale-110 ${
                 selectedBackground.id === bg.id
                   ? 'bg-purple-500/30 border-purple-400 scale-110 shadow-lg shadow-purple-500/50'
                   : 'bg-gray-800/50 border-gray-700 hover:border-gray-500 hover:bg-gray-700/50'
               }`}
               title={bg.name}
             >
-              <span className="text-2xl mb-0.5">{bg.emoji}</span>
-              <span className="text-[9px] text-gray-300 font-medium truncate w-full text-center px-1">{bg.name}</span>
+              <span className="text-xl mb-0.5">{bg.emoji}</span>
+              <span className="text-[8px] text-gray-300 font-medium truncate w-full text-center px-0.5">{bg.name}</span>
             </button>
           ))}
         </div>
