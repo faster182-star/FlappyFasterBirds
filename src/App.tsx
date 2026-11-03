@@ -246,110 +246,128 @@ export default function App() {
     return false
   }, [])
 
-  // ===== Draw Pig =====
-  const drawPig = useCallback((ctx: CanvasRenderingContext2D, bird: Bird) => {
+  // ===== Draw Panda =====
+  const drawPanda = useCallback((ctx: CanvasRenderingContext2D, bird: Bird) => {
     ctx.save()
     ctx.translate(BIRD_X, bird.y)
     ctx.rotate((bird.rotation * Math.PI) / 180)
 
-    // Body
+    // Body (white)
     const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, BIRD_SIZE / 2)
-    bodyGrad.addColorStop(0, '#fbcfe8')
-    bodyGrad.addColorStop(0.6, '#f9a8d4')
-    bodyGrad.addColorStop(1, '#ec4899')
+    bodyGrad.addColorStop(0, '#ffffff')
+    bodyGrad.addColorStop(0.7, '#f5f5f5')
+    bodyGrad.addColorStop(1, '#e5e5e5')
     ctx.fillStyle = bodyGrad
     ctx.beginPath()
-    ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.2, 0, 0, Math.PI * 2)
+    ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2.1, 0, 0, Math.PI * 2)
     ctx.fill()
 
-    // Ears
-    ctx.fillStyle = '#ec4899'
+    // Ears (black)
+    ctx.fillStyle = '#1a1a1a'
     // Left ear
     ctx.beginPath()
-    ctx.ellipse(-6, -12, 5, 7, -0.3, 0, Math.PI * 2)
+    ctx.arc(-10, -11, 6, 0, Math.PI * 2)
     ctx.fill()
     // Right ear
     ctx.beginPath()
-    ctx.ellipse(4, -12, 5, 7, 0.3, 0, Math.PI * 2)
-    ctx.fill()
-    // Inner ears
-    ctx.fillStyle = '#f472b6'
-    ctx.beginPath()
-    ctx.ellipse(-6, -11, 3, 4, -0.3, 0, Math.PI * 2)
-    ctx.fill()
-    ctx.beginPath()
-    ctx.ellipse(4, -11, 3, 4, 0.3, 0, Math.PI * 2)
+    ctx.arc(10, -11, 6, 0, Math.PI * 2)
     ctx.fill()
 
-    // Snout (пятачок)
-    ctx.fillStyle = '#f472b6'
+    // Inner ears (dark gray)
+    ctx.fillStyle = '#404040'
     ctx.beginPath()
-    ctx.ellipse(10, 2, 8, 6, 0, 0, Math.PI * 2)
+    ctx.arc(-10, -11, 3, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(10, -11, 3, 0, Math.PI * 2)
     ctx.fill()
 
-    // Nostrils
-    ctx.fillStyle = '#be185d'
+    // Eye patches (black, characteristic panda feature)
+    ctx.fillStyle = '#1a1a1a'
+    // Left eye patch
     ctx.beginPath()
-    ctx.ellipse(8, 2, 2, 2.5, 0, 0, Math.PI * 2)
+    ctx.ellipse(-6, -3, 6, 7, -0.2, 0, Math.PI * 2)
     ctx.fill()
+    // Right eye patch
     ctx.beginPath()
-    ctx.ellipse(13, 2, 2, 2.5, 0, 0, Math.PI * 2)
-    ctx.fill()
-
-    // Eyes
-    ctx.fillStyle = '#fff'
-    ctx.beginPath()
-    ctx.arc(-2, -4, 5, 0, Math.PI * 2)
-    ctx.fill()
-    ctx.beginPath()
-    ctx.arc(6, -4, 5, 0, Math.PI * 2)
+    ctx.ellipse(6, -3, 6, 7, 0.2, 0, Math.PI * 2)
     ctx.fill()
 
-    // Pupils
-    ctx.fillStyle = '#1e1e1e'
+    // Eyes (white)
+    ctx.fillStyle = '#ffffff'
     ctx.beginPath()
-    ctx.arc(-1, -4, 2.5, 0, Math.PI * 2)
+    ctx.arc(-6, -3, 3.5, 0, Math.PI * 2)
     ctx.fill()
     ctx.beginPath()
-    ctx.arc(7, -4, 2.5, 0, Math.PI * 2)
+    ctx.arc(6, -3, 3.5, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Pupils (black)
+    ctx.fillStyle = '#000000'
+    ctx.beginPath()
+    ctx.arc(-5, -3, 2, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(7, -3, 2, 0, Math.PI * 2)
     ctx.fill()
 
     // Eye highlights
-    ctx.fillStyle = '#fff'
+    ctx.fillStyle = '#ffffff'
     ctx.beginPath()
-    ctx.arc(0, -5, 1, 0, Math.PI * 2)
+    ctx.arc(-4.5, -3.5, 0.8, 0, Math.PI * 2)
     ctx.fill()
     ctx.beginPath()
-    ctx.arc(8, -5, 1, 0, Math.PI * 2)
+    ctx.arc(7.5, -3.5, 0.8, 0, Math.PI * 2)
     ctx.fill()
 
-    // Curly tail
-    const tailWag = Math.sin(frameRef.current * 0.15) * 2
-    ctx.strokeStyle = '#ec4899'
-    ctx.lineWidth = 2.5
+    // Nose (black)
+    ctx.fillStyle = '#1a1a1a'
+    ctx.beginPath()
+    ctx.ellipse(0, 3, 3, 2.5, 0, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Nose highlight
+    ctx.fillStyle = '#404040'
+    ctx.beginPath()
+    ctx.ellipse(-0.5, 2.5, 1, 0.8, 0, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Mouth
+    ctx.strokeStyle = '#1a1a1a'
+    ctx.lineWidth = 1.2
     ctx.lineCap = 'round'
     ctx.beginPath()
-    ctx.moveTo(-BIRD_SIZE / 2 + 2, 0)
-    ctx.bezierCurveTo(
-      -BIRD_SIZE / 2 - 3, -3 + tailWag,
-      -BIRD_SIZE / 2 - 6, 3 + tailWag,
-      -BIRD_SIZE / 2 - 4, 6 + tailWag
-    )
-    ctx.bezierCurveTo(
-      -BIRD_SIZE / 2 - 2, 8 + tailWag,
-      -BIRD_SIZE / 2 - 7, 10 + tailWag,
-      -BIRD_SIZE / 2 - 8, 7 + tailWag
-    )
+    ctx.moveTo(0, 5)
+    ctx.lineTo(0, 7)
+    ctx.stroke()
+    ctx.beginPath()
+    ctx.arc(-2, 8, 2, -Math.PI, 0)
+    ctx.stroke()
+    ctx.beginPath()
+    ctx.arc(2, 8, 2, -Math.PI, 0)
     ctx.stroke()
 
     // Cheeks (blush)
-    ctx.fillStyle = 'rgba(244, 114, 182, 0.4)'
+    ctx.fillStyle = 'rgba(255, 182, 193, 0.5)'
     ctx.beginPath()
-    ctx.ellipse(-6, 3, 3, 2, 0, 0, Math.PI * 2)
+    ctx.ellipse(-10, 4, 3, 2, 0, 0, Math.PI * 2)
     ctx.fill()
     ctx.beginPath()
-    ctx.ellipse(14, 3, 3, 2, 0, 0, Math.PI * 2)
+    ctx.ellipse(10, 4, 3, 2, 0, 0, Math.PI * 2)
     ctx.fill()
+
+    // Bamboo leaf accessory (cute detail)
+    const leafWave = Math.sin(frameRef.current * 0.1) * 3
+    ctx.fillStyle = '#22c55e'
+    ctx.beginPath()
+    ctx.ellipse(13, -10 + leafWave, 4, 2, 0.5, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.strokeStyle = '#16a34a'
+    ctx.lineWidth = 0.5
+    ctx.beginPath()
+    ctx.moveTo(11, -10 + leafWave)
+    ctx.lineTo(15, -10 + leafWave)
+    ctx.stroke()
 
     ctx.restore()
   }, [])
@@ -605,7 +623,7 @@ export default function App() {
       drawBackground(ctx)
       pipesRef.current.forEach((pipe) => drawPipe(ctx, pipe))
       drawGround(ctx)
-      drawPig(ctx, birdRef.current)
+      drawPanda(ctx, birdRef.current)
       drawParticles(ctx)
 
       if (state === 'playing') {
@@ -628,7 +646,7 @@ export default function App() {
     return () => {
       cancelAnimationFrame(animFrameRef.current)
     }
-  }, [bestScores, checkCollision, drawBackground, drawPig, drawDifficultyBadge, drawGround, drawParticles, drawPipe, drawScore, spawnParticles])
+  }, [bestScores, checkCollision, drawBackground, drawPanda, drawDifficultyBadge, drawGround, drawParticles, drawPipe, drawScore, spawnParticles])
 
   // ===== Keyboard Handler =====
   useEffect(() => {
@@ -712,7 +730,7 @@ export default function App() {
       {/* Title */}
       <div className="mb-4 text-center">
         <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-500">
-          🐷 Flappy Pig
+          🐼 Flappy Panda
         </h1>
       </div>
 
@@ -733,7 +751,7 @@ export default function App() {
         {displayState === 'menu' && !showDifficultyPicker && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
             <div className="text-center">
-              <div className="text-6xl mb-4 animate-bounce">🐷</div>
+              <div className="text-6xl mb-4 animate-bounce">🐼</div>
               <h2 className="text-3xl font-bold text-white mb-6">Готовы?</h2>
               
               {/* Difficulty selector */}
