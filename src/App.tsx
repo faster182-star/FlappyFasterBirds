@@ -5,13 +5,73 @@ const CANVAS_WIDTH = 400
 const CANVAS_HEIGHT = 600
 const BIRD_SIZE = 30
 const BIRD_X = 80
-const GRAVITY = 0.45
-const JUMP_FORCE = -7.5
 const PIPE_WIDTH = 60
-const PIPE_GAP = 155
-const PIPE_SPEED = 2.5
-const PIPE_SPAWN_INTERVAL = 1800
 const GROUND_HEIGHT = 60
+
+// ===== Difficulty Levels =====
+interface DifficultyConfig {
+  name: string
+  nameRu: string
+  icon: string
+  color: string
+  gravity: number
+  jumpForce: number
+  pipeGap: number
+  pipeSpeed: number
+  pipeSpawnInterval: number
+  description: string
+}
+
+const DIFFICULTIES: Record<string, DifficultyConfig> = {
+  easy: {
+    name: 'Easy',
+    nameRu: 'Легко',
+    icon: '😊',
+    color: 'from-green-400 to-emerald-500',
+    gravity: 0.35,
+    jumpForce: -7,
+    pipeGap: 180,
+    pipeSpeed: 2,
+    pipeSpawnInterval: 2200,
+    description: 'Для новичков',
+  },
+  normal: {
+    name: 'Normal',
+    nameRu: 'Нормально',
+    icon: '😎',
+    color: 'from-blue-400 to-cyan-500',
+    gravity: 0.45,
+    jumpForce: -7.5,
+    pipeGap: 155,
+    pipeSpeed: 2.5,
+    pipeSpawnInterval: 1800,
+    description: 'Стандартная сложность',
+  },
+  hard: {
+    name: 'Hard',
+    nameRu: 'Сложно',
+    icon: '😤',
+    color: 'from-orange-400 to-red-500',
+    gravity: 0.55,
+    jumpForce: -8,
+    pipeGap: 130,
+    pipeSpeed: 3,
+    pipeSpawnInterval: 1500,
+    description: 'Для опытных',
+  },
+  extreme: {
+    name: 'Extreme',
+    nameRu: 'Экстрим',
+    icon: '💀',
+    color: 'from-purple-500 to-pink-600',
+    gravity: 0.65,
+    jumpForce: -8.5,
+    pipeGap: 110,
+    pipeSpeed: 3.5,
+    pipeSpawnInterval: 1300,
+    description: 'Только для мастеров',
+  },
+}
 
 // ===== Types =====
 interface Bird {
@@ -37,7 +97,7 @@ interface Particle {
   size: number
 }
 
-type GameState = 'menu' | 'playing' | 'gameover'
+type GameState = 'menu' | 'selecting' | 'playing' | 'gameover'
 
 // ===== Helper Functions =====
 function lerp(a: number, b: number, t: number) {
@@ -78,13 +138,21 @@ export default function App() {
   const groundOffsetRef = useRef(0)
   const flashRef = useRef(0)
   const shakeRef = useRef({ x: 0, y: 0, intensity: 0 })
+  const difficultyRef = useRef<string>('normal')
 
   const [displayState, setDisplayState] = useState<GameState>('menu')
   const [score, setScore] = useState(0)
-  const [bestScore, setBestScore] = useState(() => {
-    const saved = localStorage.getItem('flappy-best')
-    return saved ? parseInt(saved) : 0
+  const [selectedDifficulty, setSelectedDifficulty] = useState('normal')
+  const [bestScores, setBestScores] = useState<Record<string, number>>(() => {
+    const saved: Record<string, number> = {}
+    Object.keys(DIFFICULTIES).forEach((key) => {
+      const val = localStorage.getItem(`flappy-best-${key}`)
+      saved[key] = val ? parseInt(val) : 0
+    })
+    return saved
   })
+
+  const currentDifficulty = DIFFICULTIES[selectedDifficulty]
 
   // ===== Particle System =====
   const spawnParticles = useCallback((x: number, y: number, count: number, color: string) => {
@@ -119,14 +187,9 @@ export default function App() {
 
   // ===== Jump =====
   const jump = useCallback(() => {
-    if (gameStateRef.current === 'menu') {
-      gameStateRef.current = 'playing'
-      setDisplayState('playing')
-      resetGame()
-      birdRef.current.velocity = JUMP_FORCE
-      spawnParticles(BIRD_X, birdRef.current.y, 5, '#fbbf24')
-    } else if (gameStateRef.current === 'playing') {
-      birdRef.current.velocity = JUMP_FORCE
+    const diff = DIFFICULTIES[difficultyRef.current]
+    if (gameStateRef.current === 'playing') {
+      birdRef.current.velocity = diff.jumpForce
       spawnParticles(BIRD_X, birdRef.current.y + BIRD_SIZE / 2, 5, '#fbbf24')
     } else if (gameStateRef.current === 'gameover') {
       if (frameRef.current > 30) {
@@ -137,6 +200,16 @@ export default function App() {
     }
   }, [resetGame, spawnParticles])
 
+  // ===== Start Game =====
+  const startGame = useCallback(() => {
+    difficultyRef.current = selectedDifficulty
+    gameStateRef.current = 'playing'
+    setDisplayState('playing')
+    resetGame()
+    birdRef.current.velocity = DIFFICULTIES[selectedDifficulty].jumpForce
+    spawnParticles(BIRD_X, birdRef.current.y, 5, '#fbbf24')
+  }, [selectedDifficulty, resetGame, spawnParticles])
+
   // ===== Collision Detection =====
   const checkCollision = useCallback(() => {
     const bird = birdRef.current
@@ -144,6 +217,7 @@ export default function App() {
     const birdBottom = bird.y + BIRD_SIZE / 2
     const birdLeft = BIRD_X - BIRD_SIZE / 2
     const birdRight = BIRD_X + BIRD_SIZE / 2
+    const diff = DIFFICULTIES[difficultyRef.current]
 
     // Ground / ceiling
     if (birdBottom >= CANVAS_HEIGHT - GROUND_HEIGHT || birdTop <= 0) {
@@ -155,13 +229,11 @@ export default function App() {
       const pipeLeft = pipe.x
       const pipeRight = pipe.x + PIPE_WIDTH
       const gapTop = pipe.topHeight
-      const gapBottom = pipe.topHeight + PIPE_GAP
+      const gapBottom = pipe.topHeight + diff.pipeGap
 
       if (birdRight > pipeLeft + 5 && birdLeft < pipeRight - 5) {
-        if (birdTop > gapTop + 5 || birdBottom < gapBottom - 5) {
-          if (birdTop < gapTop || birdBottom > gapBottom) {
-            return true
-          }
+        if (birdTop < gapTop || birdBottom > gapBottom) {
+          return true
         }
       }
     }
@@ -224,8 +296,9 @@ export default function App() {
 
   // ===== Draw Pipe =====
   const drawPipe = useCallback((ctx: CanvasRenderingContext2D, pipe: Pipe) => {
+    const diff = DIFFICULTIES[difficultyRef.current]
     const gapTop = pipe.topHeight
-    const gapBottom = pipe.topHeight + PIPE_GAP
+    const gapBottom = pipe.topHeight + diff.pipeGap
 
     // Top pipe
     const topGrad = ctx.createLinearGradient(pipe.x, 0, pipe.x + PIPE_WIDTH, 0)
@@ -359,6 +432,30 @@ export default function App() {
     ctx.restore()
   }, [])
 
+  // ===== Draw Difficulty Badge on Canvas =====
+  const drawDifficultyBadge = useCallback((ctx: CanvasRenderingContext2D) => {
+    const diff = DIFFICULTIES[difficultyRef.current]
+    ctx.save()
+    ctx.font = 'bold 14px Arial, sans-serif'
+    const text = `${diff.icon} ${diff.nameRu}`
+    const metrics = ctx.measureText(text)
+    const padding = 10
+    const badgeWidth = metrics.width + padding * 2
+    const badgeHeight = 28
+    const badgeX = CANVAS_WIDTH / 2 - badgeWidth / 2
+    const badgeY = 8
+
+    ctx.fillStyle = 'rgba(0,0,0,0.4)'
+    drawRoundedRect(ctx, badgeX, badgeY, badgeWidth, badgeHeight, 14)
+    ctx.fill()
+
+    ctx.fillStyle = '#ffffff'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText(text, CANVAS_WIDTH / 2, badgeY + badgeHeight / 2)
+    ctx.restore()
+  }, [])
+
   // ===== Game Loop =====
   useEffect(() => {
     const canvas = canvasRef.current
@@ -369,23 +466,24 @@ export default function App() {
     const gameLoop = () => {
       frameRef.current++
       const state = gameStateRef.current
+      const diff = DIFFICULTIES[difficultyRef.current]
 
       // ===== Update =====
       if (state === 'playing') {
         // Bird physics
         const bird = birdRef.current
-        bird.velocity += GRAVITY
+        bird.velocity += diff.gravity
         bird.y += bird.velocity
         bird.rotation = lerp(bird.rotation, Math.min(bird.velocity * 4, 70), 0.1)
 
         // Ground scroll
-        groundOffsetRef.current -= PIPE_SPEED
+        groundOffsetRef.current -= diff.pipeSpeed
 
         // Pipe spawning
         const now = Date.now()
-        if (now - lastPipeTimeRef.current > PIPE_SPAWN_INTERVAL) {
+        if (now - lastPipeTimeRef.current > diff.pipeSpawnInterval) {
           const minTop = 60
-          const maxTop = CANVAS_HEIGHT - GROUND_HEIGHT - PIPE_GAP - 60
+          const maxTop = CANVAS_HEIGHT - GROUND_HEIGHT - diff.pipeGap - 60
           const topHeight = minTop + Math.random() * (maxTop - minTop)
           pipesRef.current.push({ x: CANVAS_WIDTH, topHeight, passed: false })
           lastPipeTimeRef.current = now
@@ -393,7 +491,7 @@ export default function App() {
 
         // Move pipes
         pipesRef.current.forEach((pipe) => {
-          pipe.x -= PIPE_SPEED
+          pipe.x -= diff.pipeSpeed
           if (!pipe.passed && pipe.x + PIPE_WIDTH < BIRD_X) {
             pipe.passed = true
             scoreRef.current++
@@ -415,12 +513,16 @@ export default function App() {
           spawnParticles(BIRD_X, bird.y, 10, '#fbbf24')
           frameRef.current = 0
 
-          if (scoreRef.current > bestScore) {
-            setBestScore(scoreRef.current)
-            localStorage.setItem('flappy-best', String(scoreRef.current))
+          const currentBest = bestScores[difficultyRef.current] || 0
+          if (scoreRef.current > currentBest) {
+            setBestScores((prev) => ({
+              ...prev,
+              [difficultyRef.current]: scoreRef.current,
+            }))
+            localStorage.setItem(`flappy-best-${difficultyRef.current}`, String(scoreRef.current))
           }
         }
-      } else if (state === 'menu') {
+      } else if (state === 'menu' || state === 'selecting') {
         // Idle bird animation
         const bird = birdRef.current
         bird.y = CANVAS_HEIGHT / 2 + Math.sin(frameRef.current * 0.05) * 15
@@ -430,7 +532,7 @@ export default function App() {
         // Bird falls
         const bird = birdRef.current
         if (bird.y < CANVAS_HEIGHT - GROUND_HEIGHT - BIRD_SIZE / 2) {
-          bird.velocity += GRAVITY
+          bird.velocity += diff.gravity
           bird.y += bird.velocity
           bird.rotation = lerp(bird.rotation, 90, 0.1)
         }
@@ -478,9 +580,10 @@ export default function App() {
       // Particles
       drawParticles(ctx)
 
-      // Score
+      // Score & badge
       if (state === 'playing') {
         drawScore(ctx, scoreRef.current)
+        drawDifficultyBadge(ctx)
       }
 
       // Flash effect
@@ -499,28 +602,53 @@ export default function App() {
     return () => {
       cancelAnimationFrame(animFrameRef.current)
     }
-  }, [bestScore, checkCollision, drawBackground, drawBird, drawGround, drawParticles, drawPipe, drawScore, spawnParticles])
+  }, [bestScores, checkCollision, drawBackground, drawBird, drawDifficultyBadge, drawGround, drawParticles, drawPipe, drawScore, spawnParticles])
 
   // ===== Input Handlers =====
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space' || e.code === 'ArrowUp') {
         e.preventDefault()
-        jump()
+        if (gameStateRef.current === 'menu') {
+          gameStateRef.current = 'selecting'
+          setDisplayState('selecting')
+        } else {
+          jump()
+        }
+      }
+      if (e.code === 'Escape') {
+        if (gameStateRef.current === 'selecting') {
+          gameStateRef.current = 'menu'
+          setDisplayState('menu')
+        }
       }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [jump])
 
+  const handleCanvasClick = () => {
+    if (gameStateRef.current === 'menu') {
+      gameStateRef.current = 'selecting'
+      setDisplayState('selecting')
+    } else {
+      jump()
+    }
+  }
+
+  const handleSelectDifficulty = (key: string) => {
+    setSelectedDifficulty(key)
+    difficultyRef.current = key
+    startGame()
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-indigo-950 to-gray-900 flex flex-col items-center justify-center p-4 select-none">
       {/* Title */}
-      <div className="mb-6 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-500 drop-shadow-lg">
+      <div className="mb-4 text-center">
+        <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-500 drop-shadow-lg">
           🐦 Flappy Bird
         </h1>
-        <p className="text-gray-400 mt-2 text-sm">Нажмите пробел, стрелку вверх или кликните для прыжка</p>
       </div>
 
       {/* Game Canvas */}
@@ -530,26 +658,78 @@ export default function App() {
           width={CANVAS_WIDTH}
           height={CANVAS_HEIGHT}
           className="block cursor-pointer"
-          onClick={jump}
+          onClick={handleCanvasClick}
           onTouchStart={(e) => {
             e.preventDefault()
-            jump()
+            handleCanvasClick()
           }}
         />
 
         {/* Menu Overlay */}
         {displayState === 'menu' && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30 backdrop-blur-[2px]">
-            <div className="text-center animate-bounce">
-              <div className="text-6xl mb-4">🐦</div>
+            <div className="text-center">
+              <div className="text-6xl mb-4 animate-bounce">🐦</div>
               <h2 className="text-3xl font-bold text-white mb-2">Готовы?</h2>
-              <p className="text-gray-200 text-lg mb-6">Нажмите чтобы начать</p>
+              <p className="text-gray-200 text-lg mb-6">Нажмите чтобы выбрать сложность</p>
+              
+              {/* Best scores summary */}
+              {Object.values(bestScores).some((s) => s > 0) && (
+                <div className="bg-black/40 rounded-xl p-4 border border-white/10 mb-4">
+                  <div className="text-sm text-gray-400 mb-2">🏆 Рекорды по уровням</div>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    {Object.entries(DIFFICULTIES).map(([key, diff]) => (
+                      bestScores[key] > 0 && (
+                        <div key={key} className="flex items-center gap-1">
+                          <span>{diff.icon}</span>
+                          <span className="text-yellow-400 font-bold">{bestScores[key]}</span>
+                        </div>
+                      )
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-            {bestScore > 0 && (
-              <div className="mt-4 px-6 py-3 bg-black/40 rounded-xl border border-yellow-500/30">
-                <span className="text-yellow-400 font-bold">🏆 Лучший: {bestScore}</span>
-              </div>
-            )}
+          </div>
+        )}
+
+        {/* Difficulty Selection Overlay */}
+        {displayState === 'selecting' && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+            <h2 className="text-2xl font-bold text-white mb-2">Выберите сложность</h2>
+            <p className="text-gray-400 text-sm mb-6">Рекорды сохраняются отдельно для каждого уровня</p>
+            
+            <div className="grid grid-cols-2 gap-3 w-full max-w-xs">
+              {Object.entries(DIFFICULTIES).map(([key, diff]) => (
+                <button
+                  key={key}
+                  onClick={() => handleSelectDifficulty(key)}
+                  className={`relative p-4 rounded-xl bg-gradient-to-br ${diff.color} bg-opacity-20 border border-white/20 hover:border-white/50 hover:scale-105 transition-all duration-200 text-left group`}
+                >
+                  <div className="absolute inset-0 rounded-xl bg-black/40 group-hover:bg-black/20 transition-colors" />
+                  <div className="relative z-10">
+                    <div className="text-2xl mb-1">{diff.icon}</div>
+                    <div className="font-bold text-white text-sm">{diff.nameRu}</div>
+                    <div className="text-white/60 text-xs">{diff.description}</div>
+                    {bestScores[key] > 0 && (
+                      <div className="mt-2 text-yellow-300 text-xs font-bold">
+                        🏆 {bestScores[key]}
+                      </div>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => {
+                gameStateRef.current = 'menu'
+                setDisplayState('menu')
+              }}
+              className="mt-4 px-4 py-2 text-gray-400 hover:text-white text-sm transition-colors"
+            >
+              ← Назад
+            </button>
           </div>
         )}
 
@@ -558,45 +738,61 @@ export default function App() {
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
             <div className="text-center">
               <div className="text-5xl mb-3">💥</div>
-              <h2 className="text-3xl font-bold text-red-400 mb-4">Игра окончена!</h2>
+              <h2 className="text-3xl font-bold text-red-400 mb-2">Игра окончена!</h2>
+              <div className={`inline-block px-3 py-1 rounded-full bg-gradient-to-r ${currentDifficulty.color} text-white text-sm font-bold mb-4`}>
+                {currentDifficulty.icon} {currentDifficulty.nameRu}
+              </div>
               
-              <div className="flex gap-6 mb-6">
-                <div className="bg-black/50 rounded-xl px-6 py-4 border border-white/10">
-                  <div className="text-gray-400 text-sm">Счёт</div>
-                  <div className="text-3xl font-bold text-white">{score}</div>
+              <div className="flex gap-4 mb-6">
+                <div className="bg-black/50 rounded-xl px-5 py-3 border border-white/10">
+                  <div className="text-gray-400 text-xs">Счёт</div>
+                  <div className="text-2xl font-bold text-white">{score}</div>
                 </div>
-                <div className="bg-black/50 rounded-xl px-6 py-4 border border-yellow-500/30">
-                  <div className="text-yellow-400 text-sm">🏆 Лучший</div>
-                  <div className="text-3xl font-bold text-yellow-300">{bestScore}</div>
+                <div className="bg-black/50 rounded-xl px-5 py-3 border border-yellow-500/30">
+                  <div className="text-yellow-400 text-xs">🏆 Рекорд</div>
+                  <div className="text-2xl font-bold text-yellow-300">
+                    {bestScores[selectedDifficulty] || 0}
+                  </div>
                 </div>
               </div>
 
-              {score === bestScore && score > 0 && (
+              {score === bestScores[selectedDifficulty] && score > 0 && (
                 <div className="text-yellow-400 font-bold mb-4 animate-pulse">
                   🎉 Новый рекорд!
                 </div>
               )}
 
-              <p className="text-gray-300 animate-pulse">Нажмите чтобы начать заново</p>
+              <div className="space-y-2">
+                <p className="text-gray-300 animate-pulse">Нажмите чтобы начать заново</p>
+                <p className="text-gray-500 text-xs">Или смените сложность в меню</p>
+              </div>
             </div>
           </div>
         )}
       </div>
 
       {/* Score Display (below canvas) */}
-      <div className="mt-6 flex gap-8">
+      <div className="mt-4 flex gap-6">
         <div className="text-center">
           <div className="text-gray-500 text-xs uppercase tracking-wider">Счёт</div>
-          <div className="text-2xl font-bold text-white">{score}</div>
+          <div className="text-xl font-bold text-white">{score}</div>
+        </div>
+        <div className="text-center">
+          <div className="text-gray-500 text-xs uppercase tracking-wider">Уровень</div>
+          <div className="text-xl font-bold">
+            <span className={`text-transparent bg-clip-text bg-gradient-to-r ${currentDifficulty.color}`}>
+              {currentDifficulty.icon} {currentDifficulty.nameRu}
+            </span>
+          </div>
         </div>
         <div className="text-center">
           <div className="text-gray-500 text-xs uppercase tracking-wider">Рекорд</div>
-          <div className="text-2xl font-bold text-yellow-400">{bestScore}</div>
+          <div className="text-xl font-bold text-yellow-400">{bestScores[selectedDifficulty] || 0}</div>
         </div>
       </div>
 
       {/* Controls hint */}
-      <div className="mt-6 flex gap-3">
+      <div className="mt-4 flex gap-3">
         <kbd className="px-3 py-1.5 bg-gray-800 border border-gray-700 rounded-lg text-gray-400 text-xs">
           Space
         </kbd>
