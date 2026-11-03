@@ -32,12 +32,12 @@ const DIFFICULTIES: Record<string, DifficultyConfig> = {
     color: 'text-green-400',
     bgColor: 'bg-green-500/10',
     borderColor: 'border-green-500/40',
-    gravity: 0.2,
-    jumpForce: -5.5,
-    pipeGap: 250,
-    pipeSpeed: 1.2,
-    pipeSpawnInterval: 3000,
-    description: 'Очень легко для всех',
+    gravity: 0.15,
+    jumpForce: -5,
+    pipeGap: 280,
+    pipeSpeed: 1,
+    pipeSpawnInterval: 3500,
+    description: 'Максимально просто',
   },
   normal: {
     name: 'Normal',
@@ -46,12 +46,12 @@ const DIFFICULTIES: Record<string, DifficultyConfig> = {
     color: 'text-blue-400',
     bgColor: 'bg-blue-500/10',
     borderColor: 'border-blue-500/40',
-    gravity: 0.28,
-    jumpForce: -6,
-    pipeGap: 200,
-    pipeSpeed: 1.7,
-    pipeSpawnInterval: 2600,
-    description: 'Комфортная игра',
+    gravity: 0.22,
+    jumpForce: -5.5,
+    pipeGap: 240,
+    pipeSpeed: 1.4,
+    pipeSpawnInterval: 3000,
+    description: 'Очень легко',
   },
   hard: {
     name: 'Hard',
@@ -60,12 +60,12 @@ const DIFFICULTIES: Record<string, DifficultyConfig> = {
     color: 'text-orange-400',
     bgColor: 'bg-orange-500/10',
     borderColor: 'border-orange-500/40',
-    gravity: 0.35,
-    jumpForce: -6.5,
-    pipeGap: 170,
-    pipeSpeed: 2.2,
-    pipeSpawnInterval: 2200,
-    description: 'Для опытных игроков',
+    gravity: 0.3,
+    jumpForce: -6,
+    pipeGap: 200,
+    pipeSpeed: 1.8,
+    pipeSpawnInterval: 2500,
+    description: 'Комфортная игра',
   },
   extreme: {
     name: 'Extreme',
@@ -74,12 +74,12 @@ const DIFFICULTIES: Record<string, DifficultyConfig> = {
     color: 'text-purple-400',
     bgColor: 'bg-purple-500/10',
     borderColor: 'border-purple-500/40',
-    gravity: 0.45,
-    jumpForce: -7,
-    pipeGap: 150,
-    pipeSpeed: 2.7,
-    pipeSpawnInterval: 1800,
-    description: 'Только для мастеров',
+    gravity: 0.38,
+    jumpForce: -6.5,
+    pipeGap: 180,
+    pipeSpeed: 2.2,
+    pipeSpawnInterval: 2000,
+    description: 'Для опытных игроков',
   },
 }
 
@@ -235,9 +235,9 @@ export default function App() {
       const gapTop = pipe.topHeight
       const gapBottom = pipe.topHeight + diff.pipeGap
 
-      // Very forgiving collision (15px margin)
-      if (birdRight > pipeLeft + 15 && birdLeft < pipeRight - 15) {
-        if (birdTop < gapTop + 10 || birdBottom > gapBottom - 10) {
+      // Super forgiving collision (20px margin)
+      if (birdRight > pipeLeft + 20 && birdLeft < pipeRight - 20) {
+        if (birdTop < gapTop + 15 || birdBottom > gapBottom - 15) {
           return true
         }
       }
@@ -466,8 +466,8 @@ export default function App() {
 
         const now = Date.now()
         if (now - lastPipeTimeRef.current > diff.pipeSpawnInterval) {
-          const minTop = 100
-          const maxTop = CANVAS_HEIGHT - GROUND_HEIGHT - diff.pipeGap - 100
+          const minTop = 120
+          const maxTop = CANVAS_HEIGHT - GROUND_HEIGHT - diff.pipeGap - 120
           const topHeight = minTop + Math.random() * (maxTop - minTop)
           pipesRef.current.push({ x: CANVAS_WIDTH, topHeight, passed: false })
           lastPipeTimeRef.current = now
