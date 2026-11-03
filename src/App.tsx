@@ -2993,51 +2993,51 @@ export default function App() {
     if (gameStateRef.current !== 'playing') return
 
     if (selectedTrail.type === 'nyan') {
-      // Nyan Cat style - solid rainbow stripes starting from character
-      const stripeHeight = 6
+      // Nyan Cat style - rainbow stripes that follow character movement
+      const stripeHeight = 5
       const totalHeight = selectedTrail.colors.length * stripeHeight
-      const startY = bird.y - totalHeight / 2
       
-      // Start point is at the left edge of the character
+      // Start from character's left edge
       const startX = BIRD_X - BIRD_SIZE / 2
 
       // Add current position to history
       trailHistoryRef.current.push({ x: startX, y: bird.y })
       
       // Keep only last N positions based on trail length
-      const maxHistory = trailLength * 2
+      const maxHistory = trailLength * 3
       if (trailHistoryRef.current.length > maxHistory) {
         trailHistoryRef.current = trailHistoryRef.current.slice(-maxHistory)
       }
 
-      // Draw stripes
+      // Draw each color stripe
       selectedTrail.colors.forEach((color, colorIndex) => {
         ctx.fillStyle = color
         ctx.beginPath()
         
-        // Start from character's left edge
-        ctx.moveTo(startX, startY + colorIndex * stripeHeight)
+        // Start from character
+        const baseY = bird.y - totalHeight / 2 + colorIndex * stripeHeight
+        ctx.moveTo(startX, baseY)
         
-        // Draw stripe following the history backwards
+        // Draw stripe following the history
         for (let i = trailHistoryRef.current.length - 1; i >= 0; i--) {
           const pos = trailHistoryRef.current[i]
           const yOffset = pos.y - bird.y
-          ctx.lineTo(pos.x, startY + colorIndex * stripeHeight + yOffset)
+          ctx.lineTo(pos.x, baseY + yOffset)
         }
         
-        // Close the stripe at the left edge of screen
+        // Close at left edge
         const lastPos = trailHistoryRef.current[0]
         if (lastPos) {
           const yOffset = lastPos.y - bird.y
-          ctx.lineTo(0, startY + colorIndex * stripeHeight + yOffset)
-          ctx.lineTo(0, startY + (colorIndex + 1) * stripeHeight + yOffset)
+          ctx.lineTo(0, baseY + yOffset)
+          ctx.lineTo(0, baseY + stripeHeight + yOffset)
         }
         
-        // Draw back along the bottom of the stripe
+        // Draw back along bottom
         for (let i = 0; i < trailHistoryRef.current.length; i++) {
           const pos = trailHistoryRef.current[i]
           const yOffset = pos.y - bird.y
-          ctx.lineTo(pos.x, startY + (colorIndex + 1) * stripeHeight + yOffset)
+          ctx.lineTo(pos.x, baseY + stripeHeight + yOffset)
         }
         
         ctx.closePath()
