@@ -2997,14 +2997,18 @@ export default function App() {
 
     if (trail.type === 'nyan') {
       // Nyan Cat style - curved rainbow stripes
-      // Add current position to history
-      trailHistoryRef.current.push({ x: startX, y: bird.y })
+      // Store only Y positions, X will be calculated
+      trailHistoryRef.current.push({ x: 0, y: bird.y })
       
       // Keep only last N positions
-      const maxHistory = Math.min(length * 2, 80)
+      const maxHistory = Math.min(length * 3, 100)
       while (trailHistoryRef.current.length > maxHistory) {
         trailHistoryRef.current.shift()
       }
+
+      // Calculate X positions - spread from startX to 0
+      const history = trailHistoryRef.current
+      const step = startX / Math.max(history.length - 1, 1)
 
       // Draw each color stripe
       trail.colors.forEach((color, colorIndex) => {
@@ -3014,21 +3018,21 @@ export default function App() {
         const stripeOffset = colorIndex * stripeHeight - totalHeight / 2
         
         // Start from character
-        ctx.moveTo(startX, bird.y + stripeOffset)
+        ctx.moveTo(startX, history[history.length - 1].y + stripeOffset)
         
-        // Draw top edge following history (backwards)
-        for (let i = trailHistoryRef.current.length - 1; i >= 0; i--) {
-          const pos = trailHistoryRef.current[i]
-          ctx.lineTo(pos.x, pos.y + stripeOffset)
+        // Draw top edge following history (backwards, from newest to oldest)
+        for (let i = history.length - 1; i >= 0; i--) {
+          const x = startX - (history.length - 1 - i) * step
+          ctx.lineTo(x, history[i].y + stripeOffset)
         }
         
         // Draw left edge
-        ctx.lineTo(0, trailHistoryRef.current[0].y + stripeOffset + stripeHeight)
+        ctx.lineTo(0, history[0].y + stripeOffset + stripeHeight)
         
-        // Draw bottom edge back (forwards)
-        for (let i = 0; i < trailHistoryRef.current.length; i++) {
-          const pos = trailHistoryRef.current[i]
-          ctx.lineTo(pos.x, pos.y + stripeOffset + stripeHeight)
+        // Draw bottom edge back (forwards, from oldest to newest)
+        for (let i = 0; i < history.length; i++) {
+          const x = startX - (history.length - 1 - i) * step
+          ctx.lineTo(x, history[i].y + stripeOffset + stripeHeight)
         }
         
         ctx.closePath()
