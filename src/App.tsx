@@ -2996,19 +2996,22 @@ export default function App() {
     const totalHeight = trail.colors.length * stripeHeight
 
     if (trail.type === 'nyan') {
-      // Nyan Cat style - curved rainbow stripes
-      // Store only Y positions, X will be calculated
+      // Nyan Cat style - curved rainbow stripes with constant thickness
+      // Store Y positions with fixed X spacing
+      const pointSpacing = 5 // pixels between each point
+      
+      // Add new point
       trailHistoryRef.current.push({ x: 0, y: bird.y })
       
-      // Keep only last N positions
-      const maxHistory = Math.min(length * 3, 100)
-      while (trailHistoryRef.current.length > maxHistory) {
+      // Calculate how many points we need to fill the screen
+      const numPoints = Math.ceil(startX / pointSpacing)
+      
+      // Keep only the points we need
+      while (trailHistoryRef.current.length > numPoints) {
         trailHistoryRef.current.shift()
       }
 
-      // Calculate X positions - spread from startX to 0
       const history = trailHistoryRef.current
-      const step = startX / Math.max(history.length - 1, 1)
 
       // Draw each color stripe
       trail.colors.forEach((color, colorIndex) => {
@@ -3017,12 +3020,12 @@ export default function App() {
         
         const stripeOffset = colorIndex * stripeHeight - totalHeight / 2
         
-        // Start from character
+        // Start from character (rightmost point)
         ctx.moveTo(startX, history[history.length - 1].y + stripeOffset)
         
         // Draw top edge following history (backwards, from newest to oldest)
         for (let i = history.length - 1; i >= 0; i--) {
-          const x = startX - (history.length - 1 - i) * step
+          const x = startX - (history.length - 1 - i) * pointSpacing
           ctx.lineTo(x, history[i].y + stripeOffset)
         }
         
@@ -3031,7 +3034,7 @@ export default function App() {
         
         // Draw bottom edge back (forwards, from oldest to newest)
         for (let i = 0; i < history.length; i++) {
-          const x = startX - (history.length - 1 - i) * step
+          const x = startX - (history.length - 1 - i) * pointSpacing
           ctx.lineTo(x, history[i].y + stripeOffset + stripeHeight)
         }
         
