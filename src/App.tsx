@@ -131,6 +131,7 @@ interface Trail {
   name: string
   emoji: string
   colors: string[]
+  type?: 'particles' | 'nyan'
 }
 
 // ===== 20 Animals =====
@@ -2744,6 +2745,7 @@ const TRAILS: Trail[] = [
     name: 'Nyan Cat',
     emoji: '🌈',
     colors: ['#ff0000', '#ff9900', '#ffff00', '#33ff00', '#0099ff', '#6633ff'],
+    type: 'nyan',
   },
   {
     id: 'rainbow',
@@ -2847,6 +2849,7 @@ export default function App() {
   const flashRef = useRef(0)
   const shakeRef = useRef({ x: 0, y: 0, intensity: 0 })
   const difficultyRef = useRef<string>('normal')
+  const trailHistoryRef = useRef<{x: number, y: number}[]>([])
 
   const [displayState, setDisplayState] = useState<GameState>('menu')
   const [score, setScore] = useState(0)
@@ -2919,6 +2922,7 @@ export default function App() {
     birdRef.current = { y: CANVAS_HEIGHT / 2, velocity: 0, rotation: 0 }
     pipesRef.current = []
     particlesRef.current = []
+    trailHistoryRef.current = []
     scoreRef.current = 0
     frameRef.current = 0
     lastPipeTimeRef.current = 0
@@ -2988,19 +2992,68 @@ export default function App() {
     const trail = selectedTrailRef.current
     const length = trailLengthRef.current
     
-    // All trails use particles
-    if (gameStateRef.current === 'playing' && frameRef.current % 2 === 0) {
-      const colorIndex = Math.floor(frameRef.current / 2) % trail.colors.length
-      particlesRef.current.push({
-        x: BIRD_X - BIRD_SIZE / 2,
-        y: bird.y,
-        vx: -1 - Math.random() * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        life: 1,
-        maxLife: length,
-        color: trail.colors[colorIndex],
-        size: 4 + Math.random() * 2,
+    if (trail.type === 'nyan') {
+      // Nyan Cat style - solid rainbow stripes
+      const stripeHeight = 8
+      const totalHeight = trail.colors.length * stripeHeight
+      const startX = BIRD_X - BIRD_SIZE / 2
+
+      // Add current position to history
+      trailHistoryRef.current.unshift({ x: startX, y: bird.y })
+      
+      // Keep only last N positions
+      const maxHistory = Math.min(length * 2, 100)
+      if (trailHistoryRef.current.length > maxHistory) {
+        trailHistoryRef.current = trailHistoryRef.current.slice(0, maxHistory)
+      }
+
+      // Draw each color stripe as a curved polygon
+      trail.colors.forEach((color, colorIndex) => {
+        ctx.fillStyle = color
+        ctx.beginPath()
+        
+        // Calculate offset for this stripe relative to bird center
+        const stripeOffset = colorIndex * stripeHeight - totalHeight / 2
+        
+        // Start from character (newest position)
+        ctx.moveTo(startX, bird.y + stripeOffset)
+        
+        // Draw top edge following the history (from newest to oldest)
+        for (let i = 0; i < trailHistoryRef.current.length; i++) {
+          const pos = trailHistoryRef.current[i]
+          ctx.lineTo(pos.x, pos.y + stripeOffset)
+        }
+        
+        // Draw left edge at the oldest position
+        const oldestPos = trailHistoryRef.current[trailHistoryRef.current.length - 1]
+        if (oldestPos) {
+          ctx.lineTo(oldestPos.x, oldestPos.y + stripeOffset + stripeHeight)
+        }
+        
+        // Draw bottom edge back to character (from oldest to newest)
+        for (let i = trailHistoryRef.current.length - 1; i >= 0; i--) {
+          const pos = trailHistoryRef.current[i]
+          ctx.lineTo(pos.x, pos.y + stripeOffset + stripeHeight)
+        }
+        
+        ctx.closePath()
+        ctx.fill()
       })
+    } else {
+      // Particle-based trails
+      if (gameStateRef.current === 'playing' && frameRef.current % 2 === 0) {
+        const colorIndex = Math.floor(frameRef.current / 2) % trail.colors.length
+        particlesRef.current.push({
+          x: BIRD_X - BIRD_SIZE / 2,
+          y: bird.y,
+          vx: -1 - Math.random() * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          life: 1,
+          maxLife: length,
+          color: trail.colors[colorIndex],
+          size: 4 + Math.random() * 2,
+        })
+      }
     }
   }, [])
 
