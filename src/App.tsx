@@ -3000,13 +3000,13 @@ export default function App() {
       // Start from character's left edge
       const startX = BIRD_X - BIRD_SIZE / 2
 
-      // Add current position to history
-      trailHistoryRef.current.push({ x: startX, y: bird.y })
+      // Add current position to history every frame
+      trailHistoryRef.current.unshift({ x: startX, y: bird.y })
       
       // Keep only last N positions based on trail length
-      const maxHistory = trailLength * 3
+      const maxHistory = trailLength * 2
       if (trailHistoryRef.current.length > maxHistory) {
-        trailHistoryRef.current = trailHistoryRef.current.slice(-maxHistory)
+        trailHistoryRef.current = trailHistoryRef.current.slice(0, maxHistory)
       }
 
       // Draw each color stripe
@@ -3017,20 +3017,23 @@ export default function App() {
         // Calculate offset for this stripe relative to bird center
         const stripeOffset = colorIndex * stripeHeight - totalHeight / 2
         
-        // Start from character
+        // Start from character (newest position)
         ctx.moveTo(startX, bird.y + stripeOffset)
         
-        // Draw stripe following the history (from newest to oldest)
-        for (let i = trailHistoryRef.current.length - 1; i >= 0; i--) {
+        // Draw top edge of stripe following the history (from newest to oldest)
+        for (let i = 0; i < trailHistoryRef.current.length; i++) {
           const pos = trailHistoryRef.current[i]
           ctx.lineTo(pos.x, pos.y + stripeOffset)
         }
         
-        // Close at left edge
-        ctx.lineTo(0, trailHistoryRef.current[0].y + stripeOffset + stripeHeight)
+        // Draw left edge (at the oldest position)
+        const oldestPos = trailHistoryRef.current[trailHistoryRef.current.length - 1]
+        if (oldestPos) {
+          ctx.lineTo(oldestPos.x, oldestPos.y + stripeOffset + stripeHeight)
+        }
         
-        // Draw back along bottom (from oldest to newest)
-        for (let i = 0; i < trailHistoryRef.current.length; i++) {
+        // Draw bottom edge back to character (from oldest to newest)
+        for (let i = trailHistoryRef.current.length - 1; i >= 0; i--) {
           const pos = trailHistoryRef.current[i]
           ctx.lineTo(pos.x, pos.y + stripeOffset + stripeHeight)
         }
