@@ -125,6 +125,14 @@ interface Background {
   draw: (ctx: CanvasRenderingContext2D, frame: number) => void
 }
 
+// ===== Trail Types =====
+interface Trail {
+  id: string
+  name: string
+  emoji: string
+  colors: string[]
+}
+
 // ===== 20 Animals =====
 const CHARACTERS: Character[] = [
   {
@@ -2729,6 +2737,70 @@ const BACKGROUNDS: Background[] = [
   },
 ]
 
+// ===== 10 Trail Types =====
+const TRAILS: Trail[] = [
+  {
+    id: 'rainbow',
+    name: 'Радуга',
+    emoji: '🌈',
+    colors: ['#ef4444', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#3b82f6', '#a855f7'],
+  },
+  {
+    id: 'fire',
+    name: 'Огонь',
+    emoji: '🔥',
+    colors: ['#fbbf24', '#f97316', '#ef4444', '#dc2626', '#991b1b'],
+  },
+  {
+    id: 'ice',
+    name: 'Лёд',
+    emoji: '❄️',
+    colors: ['#e0f2fe', '#bae6fd', '#7dd3fc', '#38bdf8', '#0ea5e9'],
+  },
+  {
+    id: 'gold',
+    name: 'Золото',
+    emoji: '✨',
+    colors: ['#fef3c7', '#fde68a', '#fbbf24', '#f59e0b', '#d97706'],
+  },
+  {
+    id: 'neon',
+    name: 'Неон',
+    emoji: '💫',
+    colors: ['#f0abfc', '#e879f9', '#d946ef', '#c026d3', '#a21caf'],
+  },
+  {
+    id: 'forest',
+    name: 'Лес',
+    emoji: '🌿',
+    colors: ['#dcfce7', '#bbf7d0', '#86efac', '#4ade80', '#22c55e'],
+  },
+  {
+    id: 'ocean',
+    name: 'Океан',
+    emoji: '🌊',
+    colors: ['#cffafe', '#a5f3fc', '#67e8f9', '#22d3ee', '#06b6d4'],
+  },
+  {
+    id: 'sunset',
+    name: 'Закат',
+    emoji: '🌅',
+    colors: ['#fed7aa', '#fdba74', '#fb923c', '#f97316', '#ea580c'],
+  },
+  {
+    id: 'galaxy',
+    name: 'Галактика',
+    emoji: '🌌',
+    colors: ['#c4b5fd', '#a78bfa', '#8b5cf6', '#7c3aed', '#6d28d9'],
+  },
+  {
+    id: 'candy',
+    name: 'Конфеты',
+    emoji: '🍭',
+    colors: ['#fbcfe8', '#f9a8d4', '#f472b6', '#ec4899', '#db2777'],
+  },
+]
+
 // ===== Helper Functions =====
 function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t
@@ -2790,6 +2862,14 @@ export default function App() {
     const saved = localStorage.getItem('flappy-speed')
     return saved ? parseFloat(saved) : 2.5
   })
+  const [selectedTrail, setSelectedTrail] = useState<Trail>(() => {
+    const saved = localStorage.getItem('flappy-trail')
+    return TRAILS.find(t => t.id === saved) || TRAILS[0]
+  })
+  const [trailLength, setTrailLength] = useState(() => {
+    const saved = localStorage.getItem('flappy-trail-length')
+    return saved ? parseInt(saved) : 25
+  })
   const [bestScores, setBestScores] = useState<Record<string, number>>(() => {
     const saved: Record<string, number> = {}
     Object.keys(DIFFICULTIES).forEach((key) => {
@@ -2842,10 +2922,12 @@ export default function App() {
     localStorage.setItem('flappy-background', selectedBackground.id)
     localStorage.setItem('flappy-gravity', customGravity.toString())
     localStorage.setItem('flappy-speed', customSpeed.toString())
+    localStorage.setItem('flappy-trail', selectedTrail.id)
+    localStorage.setItem('flappy-trail-length', trailLength.toString())
     resetGame()
     birdRef.current.velocity = DIFFICULTIES[selectedDifficulty].jumpForce
     spawnParticles(BIRD_X, birdRef.current.y, 5, '#fbbf24')
-  }, [selectedDifficulty, selectedCharacter, selectedBackground, customGravity, customSpeed, resetGame, spawnParticles])
+  }, [selectedDifficulty, selectedCharacter, selectedBackground, customGravity, customSpeed, selectedTrail, trailLength, resetGame, spawnParticles])
 
   // ===== Jump =====
   const jump = useCallback(() => {
@@ -2886,36 +2968,25 @@ export default function App() {
     return false
   }, [])
 
-  // ===== Draw Rainbow Trail =====
-  const drawRainbowTrail = useCallback((ctx: CanvasRenderingContext2D, bird: Bird) => {
+  // ===== Draw Trail =====
+  const drawTrail = useCallback((ctx: CanvasRenderingContext2D, bird: Bird) => {
     if (gameStateRef.current !== 'playing') return
-
-    // Rainbow colors
-    const colors = [
-      '#ef4444', // red
-      '#f97316', // orange
-      '#eab308', // yellow
-      '#22c55e', // green
-      '#06b6d4', // cyan
-      '#3b82f6', // blue
-      '#a855f7', // purple
-    ]
 
     // Spawn trail particles
     if (frameRef.current % 2 === 0) {
-      const colorIndex = Math.floor(frameRef.current / 2) % colors.length
+      const colorIndex = Math.floor(frameRef.current / 2) % selectedTrail.colors.length
       particlesRef.current.push({
         x: BIRD_X - 10,
         y: bird.y,
         vx: -1 - Math.random() * 0.5,
         vy: (Math.random() - 0.5) * 0.5,
         life: 1,
-        maxLife: 25,
-        color: colors[colorIndex],
+        maxLife: trailLength,
+        color: selectedTrail.colors[colorIndex],
         size: 4 + Math.random() * 2,
       })
     }
-  }, [])
+  }, [selectedTrail, trailLength])
 
   // ===== Draw Character =====
   const drawCharacter = useCallback((ctx: CanvasRenderingContext2D, bird: Bird) => {
@@ -3147,7 +3218,7 @@ export default function App() {
       drawBackground(ctx)
       pipesRef.current.forEach((pipe) => drawPipe(ctx, pipe))
       drawGround(ctx)
-      drawRainbowTrail(ctx, birdRef.current)
+      drawTrail(ctx, birdRef.current)
       drawCharacter(ctx, birdRef.current)
       drawParticles(ctx)
 
@@ -3171,7 +3242,7 @@ export default function App() {
     return () => {
       cancelAnimationFrame(animFrameRef.current)
     }
-  }, [bestScores, checkCollision, customGravity, customSpeed, drawBackground, drawCharacter, drawDifficultyBadge, drawGround, drawParticles, drawPipe, drawRainbowTrail, drawScore, spawnParticles])
+  }, [bestScores, checkCollision, customGravity, customSpeed, drawBackground, drawCharacter, drawDifficultyBadge, drawGround, drawParticles, drawPipe, drawTrail, drawScore, spawnParticles])
 
   // ===== Keyboard Handler =====
   useEffect(() => {
@@ -3523,6 +3594,58 @@ export default function App() {
                 <span>Быстро</span>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Trail Selection Panel */}
+      <div className="mt-4 w-full max-w-3xl">
+        <div className="text-center mb-3">
+          <span className="text-gray-400 text-sm">Выберите шлейф:</span>
+          <span className="ml-2 text-white font-bold">{selectedTrail.emoji} {selectedTrail.name}</span>
+        </div>
+        <div className="flex flex-wrap gap-2 justify-center px-2">
+          {TRAILS.map((trail) => (
+            <button
+              key={trail.id}
+              onClick={() => setSelectedTrail(trail)}
+              className={`flex flex-col items-center justify-center w-20 h-20 rounded-xl border-2 transition-all duration-200 hover:scale-110 ${
+                selectedTrail.id === trail.id
+                  ? 'bg-pink-500/30 border-pink-400 scale-110 shadow-lg shadow-pink-500/50'
+                  : 'bg-gray-800/50 border-gray-700 hover:border-gray-500 hover:bg-gray-700/50'
+              }`}
+              title={trail.name}
+            >
+              <span className="text-2xl mb-1">{trail.emoji}</span>
+              <span className="text-[9px] text-gray-300 font-medium">{trail.name}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Trail Length Slider */}
+      <div className="mt-4 w-full max-w-3xl">
+        <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700">
+          <div className="flex justify-between items-center mb-2">
+            <label className="text-sm text-gray-300 font-medium">
+              🌟 Длина шлейфа
+            </label>
+            <span className="text-sm text-pink-400 font-bold">
+              {trailLength}
+            </span>
+          </div>
+          <input
+            type="range"
+            min="10"
+            max="60"
+            step="5"
+            value={trailLength}
+            onChange={(e) => setTrailLength(parseInt(e.target.value))}
+            className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+          />
+          <div className="flex justify-between text-xs text-gray-500 mt-1">
+            <span>Короткий</span>
+            <span>Длинный</span>
           </div>
         </div>
       </div>
